@@ -96,7 +96,7 @@ export const handler = NextAuth({
     },
     callbacks: {
         async signIn({ account, user, credentials, email, profile }) {
-            console.log(account, user, credentials, email, 'IS FOR THE USER');
+            console.log(account?.provider, user, credentials, email, 'IS FOR THE USER');
             try {
                 const userData = await prisma.user.findUniqueOrThrow({
                     where: {

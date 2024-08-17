@@ -204,7 +204,9 @@ export function SignUpForm({ googleProvider, githubProvider, userType, credentia
                 <div className="flex flex-col mt-4 w-full">
                     <Button variant="outline" key={googleProvider}
                         onClick={() => {
-                            signIn(googleProvider)
+                            signIn(googleProvider, {}, {
+                                userId: "hahayash95"
+                            })
                         }} >
                         <LogoComponent logo={googleLogo} /> Sign Up with Google
                     </Button>
