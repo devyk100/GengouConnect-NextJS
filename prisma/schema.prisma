@@ -29,8 +29,8 @@ model User {
   user_id                      String                         @unique
   name                         String
   user_type                    UserType
-  email_id                     String                         @unique
-  phone                        String                         @unique
+  email_id                     String                       
+  phone                        String                        
   profile_picture              String
   password                     String
   register_method              RegisterMethod

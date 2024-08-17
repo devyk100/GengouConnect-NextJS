@@ -1,6 +1,5 @@
 "use client"
 
-import { formSchema } from "@/lib/signUpFormSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -25,13 +24,16 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { signIn } from "next-auth/react"
 import { Separator } from "./ui/separator"
 import { toast } from "sonner"
-import { useEffect } from "react"
+import { compareHash, hashPassword, test } from "../lib/password-hashing"
+import { useCallback, useEffect } from "react"
 import { ProviderTypes } from "@/app/api/auth/[...nextauth]/route"
+import { formSchema } from "@/lib/signUpFormSchema"
 
 export function LogoComponent({ logo }: { logo: any }) {
     return (
@@ -45,7 +47,7 @@ export enum UserType {
     Learner
 }
 
-export function SignInForm({ googleProvider, githubProvider, userType, credentialsProvider }:
+export function SignUpForm({ googleProvider, githubProvider, userType, credentialsProvider }:
     {
         googleProvider: ProviderTypes,
         githubProvider: ProviderTypes,
@@ -57,13 +59,15 @@ export function SignInForm({ googleProvider, githubProvider, userType, credentia
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: "",
-            password: ""
+            password: "",
+            name: "",
+            phone: "",
+            userId: ""
         }
     })
 
     function OnSubmit(values: z.infer<typeof formSchema>) {
         console.log("The values were submitted dude", values)
-        signIn(credentialsProvider, { email: values.email, password: values.password })
     }
 
     useEffect(() => {
@@ -103,31 +107,56 @@ export function SignInForm({ googleProvider, githubProvider, userType, credentia
             clearTimeout(timer)
         }
     }, [])
+    
+    const something = useCallback(() => {
+        setTimeout(() => {
+            const value = form.watch(function ({userId}) {
+                console.log("user id is changed and it has become", userId)
+            })
+            console.log(value)
+            form.setError("userId", {
+                message: "something is wrong dude",
+                type: "value"
+            })
+            toast("The user name is already taken")
+        })
+    }, [form])
 
     return (
         <>
             <Card className="w-fit px-4 py-4 flex flex-col items-center justify-center">
                 <CardHeader>
                     <CardTitle>
-                        Sign Up to GengouConnect {" "}
+                        Sign in to GengouConnect {" "}
                         {userType == UserType.Instructor ? 
                         <span className="bg-clip-text bg-gradient-to-r from-orange-400 to-red-400 text-transparent font-semibold">Instructor</span> : 
                         <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-green-400 text-transparent font-semibold">Learner</span>}
                     </CardTitle>
                     <CardDescription>
-                        Sign Up via email, Google, or Github to continue
+                        Sign in via email, Google, or Github to continue
                     </CardDescription>
                 </CardHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(OnSubmit)} className="flex flex-col items-center">
+                        <FormField control={form.control} name="userId" render={({ field }) => (<>
+                            <FormItem>
+                                <FormLabel>Username</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="johndoe@email.com" type="text" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    Pick any suitabe username
+                                </FormDescription>
+                            </FormItem>
+                        </>)} />
                         <FormField control={form.control} name="email" render={({ field }) => (<>
                             <FormItem>
                                 <FormLabel>Email</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="johndoe@email.com" {...field} />
+                                    <Input placeholder="johndoe@email.com" type="email" {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    Email id for your new account
+                                    The email id used in your account
                                 </FormDescription>
                             </FormItem>
                         </>)} />
@@ -136,16 +165,39 @@ export function SignInForm({ googleProvider, githubProvider, userType, credentia
                             <FormItem>
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="password" {...field} />
+                                    <Input placeholder="password" type="password" {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    The password of your account
+                                    The password for your account
+                                </FormDescription>
+                            </FormItem>
+                        </>)} />
+
+                        <FormField control={form.control} name="name" render={({ field }) => (<>
+                            <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="John Doe" type="text" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    Your official Name
+                                </FormDescription>
+                            </FormItem>
+                        </>)} />
+                        <FormField control={form.control} name="phone" render={({ field }) => (<>
+                            <FormItem>
+                                <FormLabel>Phone No.</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="1234567890" type="text" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    Your Phone Number
                                 </FormDescription>
                             </FormItem>
                         </>)} />
 
 
-                        <Button type="submit" className="my-2">Sign in</Button>
+                        <Button type="submit" className="my-2">Complete</Button>
                     </form>
                 </Form>
                 <Separator />
@@ -154,13 +206,16 @@ export function SignInForm({ googleProvider, githubProvider, userType, credentia
                         onClick={() => {
                             signIn(googleProvider)
                         }} >
-                        <LogoComponent logo={googleLogo} /> Sign in with Google
+                        <LogoComponent logo={googleLogo} /> Sign Up with Google
                     </Button>
                     <Button variant="outline"key={githubProvider}
                         onClick={() => {
                             signIn(githubProvider)
                         }}>
-                        <LogoComponent logo={githubLogo} /> Sign in with Github
+                        <LogoComponent logo={githubLogo} /> Sign Up with Github
+                    </Button>
+                    <Button onClick={()=>something()}>
+                        Testing purpose
                     </Button>
                 </div>
             </Card>
