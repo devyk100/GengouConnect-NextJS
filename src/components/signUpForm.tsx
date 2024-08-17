@@ -35,6 +35,7 @@ import { useCallback, useEffect } from "react"
 import { ProviderTypes } from "@/app/api/auth/[...nextauth]/route"
 import { formSchema } from "@/lib/signUpFormSchema"
 import { createUser } from "@/db/create-user"
+import { redirect, useRouter } from "next/navigation"
 
 export function LogoComponent({ logo }: { logo: any }) {
     return (
@@ -56,6 +57,7 @@ export function SignUpForm({ googleProvider, githubProvider, userType, credentia
         credentialsProvider: ProviderTypes
     }
 ) {
+    const { push } = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -74,6 +76,8 @@ export function SignUpForm({ googleProvider, githubProvider, userType, credentia
         const response = await createUser(values.userId, values.name, userType, values.email, values.phone, values.password);
         if(!response){
             toast("Some error has occured")
+        } else {
+            push("/auth/signIn")
         }
     }
 
