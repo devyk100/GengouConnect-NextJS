@@ -28,6 +28,9 @@ import {
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import { signIn } from "next-auth/react"
+import { Separator } from "./ui/separator"
+import { toast } from "sonner"
+import {compareHash, hashPassword, test} from "../lib/password-hashing"
 
 export function LogoComponent({ logo }: { logo: any }) {
     return (
@@ -46,11 +49,12 @@ export function SignInForm() {
 
     function OnSubmit(values: z.infer<typeof formSchema>) {
         console.log("The values were submitted dude", values)
+        signIn("email", {email: values.email, password: values.password})
     }
 
     return (
         <>
-            <Card>
+            <Card className="w-fit px-4 py-4 flex flex-col items-center justify-center">
                 <CardHeader>
                     <CardTitle>
                         Sign in to GengouConnect
@@ -60,34 +64,55 @@ export function SignInForm() {
                     </CardDescription>
                 </CardHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(OnSubmit)} className="space-y-8">
+                    <form onSubmit={form.handleSubmit(OnSubmit)} className="flex flex-col items-center">
                         <FormField control={form.control} name="email" render={({ field }) => (<>
                             <FormItem>
                                 <FormLabel>Email</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="something dude" {...field} />
+                                    <Input placeholder="johndoe@email.com" {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    This is your email that will be used for the account
+                                    The email id used in your account
                                 </FormDescription>
                             </FormItem>
-                        </>)}>
-                        </FormField>
-                        <Button type="submit">Submit</Button>
+                        </>)} />
+
+                        <FormField control={form.control} name="password" render={({ field }) => (<>
+                            <FormItem>  
+                                <FormLabel>Password</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="password" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    The password of your account
+                                </FormDescription>
+                            </FormItem>
+                        </>)} />
+
+
+                        <Button type="submit" className="my-2">Sign in</Button>
                     </form>
                 </Form>
-                <Button variant="outline"
-                    onClick={() => {
-                        signIn("google")
-                    }} >
-                    <LogoComponent logo={googleLogo} /> Sign in with Google
-                </Button>
-                <Button variant="outline"
-                    onClick={() => {
-                        signIn("github")
+                <Separator />
+                <div className="flex flex-col mt-4 w-full">
+                    <Button variant="outline"
+                        onClick={() => {
+                            signIn("google")
+                        }} >
+                        <LogoComponent logo={googleLogo} /> Sign in with Google
+                    </Button>
+                    <Button variant="outline"
+                        onClick={() => {
+                            signIn("github")
+                        }}>
+                        <LogoComponent logo={githubLogo} /> Sign in with Github
+                    </Button>
+                    <Button onClick={async () => {
+                        console.log(await test())
                     }}>
-                    <LogoComponent logo={githubLogo} /> Sign in with Github
-                </Button>
+                        Test Button
+                    </Button>
+                </div>
             </Card>
         </>
     )

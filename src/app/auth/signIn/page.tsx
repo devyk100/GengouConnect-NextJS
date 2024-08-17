@@ -13,17 +13,10 @@ export default function SignIn(){
     }, [])
     return (
         <>
-            <button onClick={() => {
-                signIn("google")
-            }}>
-                    Sign in to google
-            </button>
-            <button onClick={() => {
-                signIn("github")
-            }}>
-                Sign in to Github
-            </button>
+
+        <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-tr from-blue-700 to-green-800">
             <SignInForm />
+        </div>
         </>
     )
 }
