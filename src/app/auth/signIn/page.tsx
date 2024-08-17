@@ -3,9 +3,17 @@
 import { SignInForm, UserType } from "@/components/signInForm"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ProviderTypes } from "@/app/api/auth/[...nextauth]/route"
+import { getSession } from "next-auth/react"
+import { useEffect } from "react"
 
 
 export default function SignIn() {
+    useEffect(() => {
+        (async function() {
+          const session = await getSession()
+          console.log(session)
+        })()
+      })
     return (
         <>
             <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-tr from-blue-700 to-green-800">

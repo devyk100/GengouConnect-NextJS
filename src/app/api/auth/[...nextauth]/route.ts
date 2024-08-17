@@ -4,6 +4,8 @@ import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compareHash, hashPassword } from "../../../../lib/password-hashing"
+import { randomUUID } from "crypto"
+import { userAgent } from "next/server"
 
 export enum ProviderTypes {
     GithubInstructor = "github-instructor",
@@ -14,14 +16,20 @@ export enum ProviderTypes {
     CredentialsInstructor = "credentials-instructor"
 }
 
-async function authorize(credentials: Record<"email" | "password", string> | undefined, req: Pick<RequestInternal, "body" | "query" | "headers" | "method">) {
+async function authorize(credentials: Record<"email" | "password" | "providerType", string> | undefined, req: Pick<RequestInternal, "body" | "query" | "headers" | "method">) {
     try {
-        const userData = await prisma.user.findUnique({
+        console.log("authorise working ")
+        const userType = (
+            (credentials?.providerType == ProviderTypes.GithubInstructor || credentials?.providerType == ProviderTypes.GoogleInstructor || credentials?.providerType == ProviderTypes.CredentialsInstructor) ? "Instructor" : "Learner"
+        )
+        const userData = await prisma.user.findFirstOrThrow({
             where: {
                 email_id: credentials?.email,
+                register_method: "Email",
+                user_type: userType
             }
         })
-        const isPasswordValid = await compareHash(credentials?.password!, userData?.password! )
+        const isPasswordValid = await compareHash(credentials?.password!, userData?.password!)
         if (!isPasswordValid) {
             throw Error("Wrong password invocation")
         }
@@ -31,10 +39,11 @@ async function authorize(credentials: Record<"email" | "password", string> | und
                 name: userData.name,
                 id: userData.user_id,
                 image: userData.profile_picture,
+                userId: userData.user_id,
             }
+            console.log("Authorise finished")
             return user
         }
-
     } catch (error) {
         console.log(error, "\nFAILED LOGIN")
         return null
@@ -74,7 +83,8 @@ export const handler = NextAuth({
             name: ProviderTypes.CredentialsInstructor,
             credentials: {
                 email: { label: "email", type: "email", placeholder: "johndoe@email.com" },
-                password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password" },
+                providerType: {label: "providerType", type: "text"}
             }, authorize
         }),
         CredentialsProvider({
@@ -83,7 +93,8 @@ export const handler = NextAuth({
             name: ProviderTypes.CredentialsLearner,
             credentials: {
                 email: { label: "email", type: "email", placeholder: "johndoe@email.com" },
-                password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password" },
+                providerType: {label: "providerType", type: "text"}
             }, authorize
         })
     ],
@@ -96,19 +107,64 @@ export const handler = NextAuth({
     },
     callbacks: {
         async signIn({ account, user, credentials, email, profile }) {
-            console.log(account?.provider, user, credentials, email, 'IS FOR THE USER');
+            // console.log(account?.provider, user, credentials, email, 'IS FOR THE USER');
+            const userType = (
+                (account?.provider == ProviderTypes.GithubInstructor || account?.provider == ProviderTypes.GoogleInstructor || account?.provider == ProviderTypes.CredentialsInstructor) ? "Instructor" : "Learner"
+            )
+            const registerMethod = (account?.provider == ProviderTypes.GithubInstructor || account?.provider == ProviderTypes.GithubLearner) ? "Github" : "Google";
             try {
-                const userData = await prisma.user.findUniqueOrThrow({
+                const userData = await prisma.user.findFirstOrThrow({
                     where: {
-                        email_id: user.email!
+                        email_id: user.email!,
+                        user_type: userType,
+                        register_method: registerMethod
                     }
                 })
                 return true;
-            } catch (error){
-                return false;
+            } catch (error) {
+                const userData = await prisma.user.create({
+                    data: {
+                        email_id: user.email!,
+                        is_verified: false,
+                        name: user.name!,
+                        password: "",
+                        is_password_set: false,
+                        is_phone_set: false,
+                        is_user_id_set: false,
+                        phone: "",
+                        profile_picture: user.image!,
+                        register_method: registerMethod,
+                        user_id: randomUUID(),
+                        user_type: userType,
+                    }
+                })
+                return true;
             }
-            return true
-        }
+        },
+        async jwt(params) {
+            console.log(params.account?.providerAccountId, params.profile, params.session, params.user, params.token)
+            if (params.account && (params.account.provider == ProviderTypes.CredentialsInstructor || params.account.provider == ProviderTypes.CredentialsLearner) && params.user?.id) {
+                // @ts-ignore
+                params.token.userId = params.user?.userId
+            } else if (params.account) {
+                const userType = (params.account.provider == ProviderTypes.GithubInstructor || params.account.provider == ProviderTypes.GoogleInstructor) ? "Instructor" : "Learner";
+                const registerMethod = (params.account.provider == ProviderTypes.GithubInstructor || params.account.provider == ProviderTypes.GithubLearner) ? "Github" : "Google";
+                const userData = await prisma.user.findFirstOrThrow({
+                    where: {
+                        email_id: params.user.email!,
+                        user_type: userType,
+                        register_method: registerMethod
+                    }
+                })
+                params.token.userId = userData.user_id;
+            }
+            return params.token
+        },
+        async session(params) {
+            // @ts-ignore
+            params.session.user!.userId = params.token.userId;
+            return params.session
+        },
     }
 })
 

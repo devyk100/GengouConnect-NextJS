@@ -29,12 +29,15 @@ model User {
   user_id                      String                         @unique
   name                         String
   user_type                    UserType
-  email_id                     String                       
-  phone                        String                        
+  email_id                     String
+  phone                        String
   profile_picture              String
   password                     String
   register_method              RegisterMethod
   is_verified                  Boolean
+  is_user_id_set               Boolean
+  is_password_set             Boolean
+  is_phone_set                Boolean
   lessons                      Lesson[]
   contents                     ExternalContentItem[]
   LiveClassToInstructorMapping LiveClassToInstructorMapping[]

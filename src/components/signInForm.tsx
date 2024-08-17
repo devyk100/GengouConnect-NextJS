@@ -1,6 +1,6 @@
 "use client"
 
-import { formSchema } from "@/lib/signUpFormSchema"
+import { formSchema } from "@/lib/signInFormSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -30,7 +30,7 @@ import Image from "next/image"
 import { signIn } from "next-auth/react"
 import { Separator } from "./ui/separator"
 import { toast } from "sonner"
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { ProviderTypes } from "@/app/api/auth/[...nextauth]/route"
 
 export function LogoComponent({ logo }: { logo: any }) {
@@ -61,10 +61,11 @@ export function SignInForm({ googleProvider, githubProvider, userType, credentia
         }
     })
 
-    function OnSubmit(values: z.infer<typeof formSchema>) {
+    const OnSubmit = (values: z.infer<typeof formSchema>) => {
         console.log("The values were submitted dude", values)
-        signIn(credentialsProvider, { email: values.email, password: values.password })
+        signIn(credentialsProvider, { email: values.email, password: values.password, providerType: credentialsProvider })
     }
+
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -109,13 +110,13 @@ export function SignInForm({ googleProvider, githubProvider, userType, credentia
             <Card className="w-fit px-4 py-4 flex flex-col items-center justify-center">
                 <CardHeader>
                     <CardTitle>
-                        Sign Up to GengouConnect {" "}
+                        Sign In to GengouConnect {" "}
                         {userType == UserType.Instructor ? 
                         <span className="bg-clip-text bg-gradient-to-r from-orange-400 to-red-400 text-transparent font-semibold">Instructor</span> : 
                         <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-green-400 text-transparent font-semibold">Learner</span>}
                     </CardTitle>
                     <CardDescription>
-                        Sign Up via email, Google, or Github to continue
+                        Sign In via email, Google, or Github to continue
                     </CardDescription>
                 </CardHeader>
                 <Form {...form}>
@@ -143,7 +144,6 @@ export function SignInForm({ googleProvider, githubProvider, userType, credentia
                                 </FormDescription>
                             </FormItem>
                         </>)} />
-
 
                         <Button type="submit" className="my-2">Sign in</Button>
                     </form>

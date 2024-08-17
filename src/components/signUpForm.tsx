@@ -34,6 +34,7 @@ import { compareHash, hashPassword, test } from "../lib/password-hashing"
 import { useCallback, useEffect } from "react"
 import { ProviderTypes } from "@/app/api/auth/[...nextauth]/route"
 import { formSchema } from "@/lib/signUpFormSchema"
+import { createUser } from "@/db/create-user"
 
 export function LogoComponent({ logo }: { logo: any }) {
     return (
@@ -66,8 +67,14 @@ export function SignUpForm({ googleProvider, githubProvider, userType, credentia
         }
     })
 
-    function OnSubmit(values: z.infer<typeof formSchema>) {
-        console.log("The values were submitted dude", values)
+    async function OnSubmit(values: z.infer<typeof formSchema>) {
+        const userType = (
+            (credentialsProvider == ProviderTypes.GithubInstructor || credentialsProvider == ProviderTypes.GoogleInstructor || credentialsProvider == ProviderTypes.CredentialsInstructor) ? "Instructor" : "Learner"
+        )
+        const response = await createUser(values.userId, values.name, userType, values.email, values.phone, values.password);
+        if(!response){
+            toast("Some error has occured")
+        }
     }
 
     useEffect(() => {
@@ -127,13 +134,13 @@ export function SignUpForm({ googleProvider, githubProvider, userType, credentia
             <Card className="w-fit px-4 py-4 flex flex-col items-center justify-center">
                 <CardHeader>
                     <CardTitle>
-                        Sign in to GengouConnect {" "}
+                        Sign Up to GengouConnect {" "}
                         {userType == UserType.Instructor ? 
                         <span className="bg-clip-text bg-gradient-to-r from-orange-400 to-red-400 text-transparent font-semibold">Instructor</span> : 
                         <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-green-400 text-transparent font-semibold">Learner</span>}
                     </CardTitle>
                     <CardDescription>
-                        Sign in via email, Google, or Github to continue
+                        Sign Up via email, Google, or Github to continue
                     </CardDescription>
                 </CardHeader>
                 <Form {...form}>
@@ -172,7 +179,6 @@ export function SignUpForm({ googleProvider, githubProvider, userType, credentia
                                 </FormDescription>
                             </FormItem>
                         </>)} />
-
                         <FormField control={form.control} name="name" render={({ field }) => (<>
                             <FormItem>
                                 <FormLabel>Name</FormLabel>
