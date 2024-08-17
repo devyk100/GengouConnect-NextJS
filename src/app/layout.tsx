@@ -19,11 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Toaster gap={8} pauseWhenPageIsHidden richColors expand />
         <Navbar />
         <main>
           {children}
         </main>
-        <Toaster />
       </body>
     </html>
   );

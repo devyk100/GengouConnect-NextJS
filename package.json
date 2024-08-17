@@ -18,6 +18,7 @@
     "@radix-ui/react-navigation-menu": "^1.2.0",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.0",
     "@tanstack/react-query": "^5.51.23",
     "@types/bcrypt": "^5.0.2",
     "bcrypt": "^5.1.1",
