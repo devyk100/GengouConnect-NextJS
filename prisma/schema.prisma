@@ -311,11 +311,11 @@ model AssignmentToQuestionMapping {
 // ------------------------------------------------------------------------------------------------------------
 
 // -------------------------- Flashcards ----------------------------------------------------------------------
-model FlashCardGroup {
+model FlashCardDeck {
   id            Int                  @id @default(sequence())
   title         String
   flashcard     FlashCard[]
-  userflashcard UserFlashCardGroup[]
+  userflashcard UserFlashCardDeck[]
 }
 
 model FlashCard {
@@ -326,15 +326,15 @@ model FlashCard {
   answer_audio_url   String?
   question_image_url String?
   answer_image_url   String?
-  flashcardgroup_id  Int
-  flashcardgroup     FlashCardGroup  @relation(fields: [flashcardgroup_id], references: [id])
+  flashcarddeck_id  Int
+  flashcarddeck     FlashCardDeck  @relation(fields: [flashcarddeck_id], references: [id])
   userflashcard      UserFlashCard[]
 }
 
-model UserFlashCardGroup {
+model UserFlashCardDeck {
   id                  Int             @id @default(sequence())
-  flashcardgroup_id   Int
-  flashcardgroup      FlashCardGroup  @relation(fields: [flashcardgroup_id], references: [id])
+  flashcarddeck_id   Int
+  flashcarddeck      FlashCardDeck  @relation(fields: [flashcarddeck_id], references: [id])
   graduating_interval Int
   easy_interval       Int
   new_cards_per_day   Int
@@ -342,13 +342,13 @@ model UserFlashCardGroup {
   learning_steps      BigInt // encode and decode it well
   userflashcard       UserFlashCard[]
 
-  @@index([flashcardgroup_id])
+  @@index([flashcarddeck_id])
 }
 
 model UserFlashCard {
   id                          Int                @id @default(sequence())
-  userflashcardgroup_id       Int
-  userflashcardgroup          UserFlashCardGroup @relation(fields: [userflashcardgroup_id], references: [id])
+  userflashcarddeck_id       Int
+  userflashcarddeck          UserFlashCardDeck @relation(fields: [userflashcarddeck_id], references: [id])
   flashcard_id                Int
   flashcard                   FlashCard          @relation(fields: [flashcard_id], references: [id])
   modified_front_side         String
@@ -363,7 +363,7 @@ model UserFlashCard {
   priority_num    Int
 
   @@index([flashcard_id])
-  @@index([userflashcardgroup_id])
+  @@index([userflashcarddeck_id])
   @@index([priority_num])
   @@index([priority_num, review_interval, review_factor])
   @@index([review_interval])

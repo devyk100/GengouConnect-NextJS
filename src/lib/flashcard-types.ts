@@ -5,4 +5,7 @@ export  type FlashcardData = {
     answerAudioUrl?: string,
     questionImageUrl?: string,
     answerImageUrl?: string
+    reviewFactor: Number,
+    reviewInterval: Number,
+    reviewPriority: Number
 }

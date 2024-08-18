@@ -1,4 +1,11 @@
+import removeImports from 'next-remove-imports';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {};
 
-export default nextConfig;
+// Apply the removeImports plugin
+const withRemoveImports = removeImports();
+
+export default withRemoveImports({
+  ...nextConfig,
+});
