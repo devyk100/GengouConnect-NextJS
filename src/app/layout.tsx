@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/themeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,11 +21,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Toaster gap={8} pauseWhenPageIsHidden richColors expand />
-        <Navbar />
-        <main>
-          {children}
-        </main>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Toaster gap={8} pauseWhenPageIsHidden richColors expand />
+          <Navbar />
+          <main>
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

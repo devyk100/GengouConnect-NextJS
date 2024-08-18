@@ -15,6 +15,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { signOut } from "next-auth/react"
+import { ModeToggle } from "./darkModeToggle"
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -114,6 +115,9 @@ export function Navbar() {
               </ListItem>
             </ul>
           </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <ModeToggle />
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
