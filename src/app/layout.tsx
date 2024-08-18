@@ -29,7 +29,7 @@ export default function RootLayout({
         >
           <Toaster gap={8} pauseWhenPageIsHidden richColors expand />
           <Navbar />
-          <main>
+          <main className="overflow-x-hidden">
             {children}
           </main>
         </ThemeProvider>

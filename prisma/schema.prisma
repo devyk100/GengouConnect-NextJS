@@ -360,9 +360,15 @@ model UserFlashCard {
 
   review_factor   Int // xx.xx --> xxxxx please, 100a
   review_interval Int
+  priority_num    Int
 
   @@index([flashcard_id])
   @@index([userflashcardgroup_id])
+  @@index([priority_num])
+  @@index([priority_num, review_interval, review_factor])
+  @@index([review_interval])
+  @@index([review_factor])
+
 }
 
 // ---------------------------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ export default function SignIn() {
       })
     return (
         <>
-            <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-tr from-blue-700 to-green-800">
+            <div className="w-screen min-h-screen -mt-10 flex items-center justify-center bg-gradient-to-tr from-blue-700 to-green-800">
                 <Tabs defaultValue="Learner" className="w-fit">
                     <TabsList className="w-full">
                         <TabsTrigger value="Learner" className="w-full">Learner</TabsTrigger>

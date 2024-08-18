@@ -1,27 +1,30 @@
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
+import { MouseEventHandler } from "react";
 
 export enum FlashcardButtonType {
     again = "Again",
     hard = "Hard",
     good = "Good",
-    easy = "easy"
+    easy = "Easy",
+    showAnswer = "Show Answer"
 }
 
-export function FlashcardButton({ type, time }: {
+export function FlashcardButton({ type, time, onClick }: {
     type: FlashcardButtonType,
-    time: string
+    time: string,
+    onClick?: MouseEventHandler<HTMLButtonElement> | undefined
 }) {
-    const textStyle = (type == FlashcardButtonType.again ? "text-red-500" : (type == FlashcardButtonType.easy) ? "text-blue-500" : (type == FlashcardButtonType.good) ? "text-green-500" : "text-zinc-500");
+    const textStyle = (type == FlashcardButtonType.again ? "text-red-500" : (type == FlashcardButtonType.easy) ? "text-blue-500" : (type == FlashcardButtonType.good) ? "text-green-500" : (type == FlashcardButtonType.hard) ? "text-zinc-500" : "");
     return (
         <>
-            <span className="flex flex-col mr-1">
-                <Button className={cn("text-lg", textStyle)} variant="outline">
+            <span className="flex flex-col w-full">
+                <Button onClick={onClick} className={cn("text-md md:text-lg", textStyle)} variant="outline">
                     {
-                        (type == FlashcardButtonType.again) ? "Again" : (type == FlashcardButtonType.easy) ? "Easy" : (type == FlashcardButtonType.good) ? "Good" : "Hard"
+                        type
                     }
                 </Button>
-                <span className={cn("text-sm", textStyle)}>
+                <span className={cn("text-[10px] sm:text-sm w-full text-center", textStyle)}>
                     {time}
                 </span>
             </span>
