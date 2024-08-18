@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import googleLogo from "../../public/google.svg"
 import githubLogo from "../../public/github.svg"
-
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -32,6 +31,7 @@ import { Separator } from "./ui/separator"
 import { toast } from "sonner"
 import { useCallback, useEffect } from "react"
 import { ProviderTypes } from "@/app/api/auth/[...nextauth]/route"
+import { useRouter } from "next/navigation"
 
 export function LogoComponent({ logo }: { logo: any }) {
     return (
@@ -65,7 +65,7 @@ export function SignInForm({ googleProvider, githubProvider, userType, credentia
         console.log("The values were submitted dude", values)
         signIn(credentialsProvider, { email: values.email, password: values.password, providerType: credentialsProvider })
     }
-
+    const { push } = useRouter();
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -161,6 +161,10 @@ export function SignInForm({ googleProvider, githubProvider, userType, credentia
                             signIn(githubProvider)
                         }}>
                         <LogoComponent logo={githubLogo} /> Sign in with Github
+                    </Button>
+                    <Separator className="my-4"/>
+                    <Button onClick={()=>push("/auth/signUp")}>
+                        Sign Up Instead
                     </Button>
                 </div>
             </Card>

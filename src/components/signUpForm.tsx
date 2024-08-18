@@ -226,8 +226,9 @@ export function SignUpForm({ googleProvider, githubProvider, userType, credentia
                         }}>
                         <LogoComponent logo={githubLogo} /> Sign Up with Github
                     </Button>
-                    <Button onClick={()=>something()}>
-                        Testing purpose
+                    <Separator className="my-4" />
+                    <Button onClick={()=>push("/auth/signIn")}>
+                        Sign in Instead
                     </Button>
                 </div>
             </Card>
