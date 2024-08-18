@@ -52,6 +52,17 @@ const CardDescription = React.forwardRef<
   />
 ))
 CardDescription.displayName = "CardDescription"
+const FlashcardContent = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-muted-foreground", className)}
+    {...props}
+  />
+))
+FlashcardContent.displayName = "FlashcardContent"
 
 const CardContent = React.forwardRef<
   HTMLDivElement,
@@ -73,4 +84,4 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, FlashcardContent }
