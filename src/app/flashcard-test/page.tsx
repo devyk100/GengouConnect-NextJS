@@ -1,5 +1,7 @@
 import FlashcardEditorView from "@/components/flashcard-editor/flashcardEditorView";
 import FlashcardView from "@/components/flashcard/flashcardView";
+// import { ForwardRefEditor } from "@/components/markdown-editor/ForwardRefEditor";
+import MarkdownEditor from "@/components/markdown-editor/MarkdownEditorMain";
 import { FlashcardData } from "@/lib/flashcard-types";
 
 export default function Page(){
@@ -25,7 +27,8 @@ fawfswe
     return (
         <>
             {/* <FlashcardView flashcardData={demo}/> */}
-            <FlashcardEditorView />
+            {/* <FlashcardEditorView /> */}
+            <MarkdownEditor />
         </>
     )
 }

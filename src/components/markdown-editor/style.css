@@ -1,0 +1,62 @@
+/* Dark mode styles for Toast UI Editor */
+
+/* Change editor background color */
+.toastui-editor-contents {
+  background-color: #2e2e2e; /* Dark background */
+  color: #e0e0e0; /* Light text color */
+}
+
+/* Change editor font color */
+.toastui-editor-contents p {
+  color: #e0e0e0; /* Light text color for paragraphs */
+}
+
+/* Customize toolbar background color */
+.toastui-editor-toolbar {
+  background-color: #1f1f1f; /* Darker background for toolbar */
+  color: #ffffff; /* White text color */
+}
+
+/* Customize toolbar button colors */
+.toastui-editor-toolbar button {
+  color: #ffffff; /* White text color for buttons */
+}
+
+/* Customize preview area background color */
+.toastui-editor-preview {
+  background-color: #1e1e1e; /* Dark background for preview area */
+  color: #e0e0e0; /* Light text color for preview */
+}
+
+/* Change the color of headings */
+.toastui-editor-contents h1,
+.toastui-editor-contents h2,
+.toastui-editor-contents h3,
+.toastui-editor-contents h4,
+.toastui-editor-contents h5,
+.toastui-editor-contents h6 {
+  color: #ffffff; /* White color for headings */
+}
+
+/* Dark mode styles for Toast UI Editor popups */
+
+/* General popup styling */
+.toastui-editor-popup,
+.toastui-editor-tooltip {
+  background-color: #2e2e2e !important; /* Dark background */
+  color: #e0e0e0 !important; /* Light text color */
+  border: 1px solid #444 !important; /* Dark border for popups */
+}
+
+/* Specific styling for tooltips, if needed */
+.toastui-editor-tooltip {
+  background-color: #333 !important; /* Slightly lighter background for better readability */
+  color: #f0f0f0 !important; /* Light text color for better contrast */
+}
+
+/* Example: Customize any specific button styles within popups if needed */
+.toastui-editor-popup button,
+.toastui-editor-tooltip button {
+  color: #ffffff !important; /* White text color for buttons */
+  background-color: #444 !important; /* Darker background for buttons */
+}

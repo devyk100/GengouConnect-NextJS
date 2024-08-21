@@ -67,3 +67,83 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* .toastui-editor-dark{
+  color: "white";
+}
+
+.toastui-editor-preview {
+  color: wheat;
+  background-color: black;
+  font-family: 'Arial', sans-serif; 
+} */
+
+
+/* Light theme styles (default) */
+.toastui-editor-contents {
+  background-color: #ffffff; /* Light background */
+  color: #000000; /* Dark text color */
+}
+
+/* Dark theme styles */
+[data-theme='dark'] .toastui-editor-contents {
+  background-color: #2e2e2e; /* Dark background */
+  color: #e0e0e0; /* Light text color */
+}
+
+[data-theme='dark'] .toastui-editor-contents p {
+  color: #e0e0e0; /* Light text color for paragraphs */
+}
+
+[data-theme='dark'] .toastui-editor-toolbar {
+  background-color: #1f1f1f; /* Darker background for toolbar */
+  color: #ffffff; /* White text color */
+}
+
+[data-theme='dark'] .toastui-editor-toolbar button {
+  color: #ffffff; /* White text color for buttons */
+}
+
+[data-theme='dark'] .toastui-editor-preview {
+  background-color: #1e1e1e; /* Dark background for preview area */
+  color: #e0e0e0; /* Light text color for preview */
+}
+
+[data-theme='dark'] .toastui-editor-contents h1,
+[data-theme='dark'] .toastui-editor-contents h2,
+[data-theme='dark'] .toastui-editor-contents h3,
+[data-theme='dark'] .toastui-editor-contents h4,
+[data-theme='dark'] .toastui-editor-contents h5,
+[data-theme='dark'] .toastui-editor-contents h6 {
+  color: #ffffff; /* White color for headings */
+}
+
+/* Dark mode styles for Toast UI Editor popups */
+[data-theme='dark'] .toastui-editor-popup,
+[data-theme='dark'] .toastui-editor-tooltip {
+  background-color: #2e2e2e !important; /* Dark background */
+  color: #e0e0e0 !important; /* Light text color */
+  border: 1px solid #444 !important; /* Dark border for popups */
+}
+
+[data-theme='dark'] .toastui-editor-tooltip {
+  background-color: #333 !important; /* Slightly lighter background for better readability */
+  color: #f0f0f0 !important; /* Light text color for better contrast */
+}
+
+[data-theme='dark'] .toastui-editor-popup button,
+[data-theme='dark'] .toastui-editor-tooltip button {
+  color: #ffffff !important; /* White text color for buttons */
+  background-color: #444 !important; /* Darker background for buttons */
+}
+
+
+[data-theme='dark'] {
+  --background: #2e2e2e;
+  --text-color: #e0e0e0;
+}
+
+.toastui-editor-contents {
+  background-color: var(--background);
+  color: var(--text-color);
+}
