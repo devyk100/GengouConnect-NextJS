@@ -1,11 +1,12 @@
 import prisma from "@/db"
-import NextAuth, { RequestInternal } from "next-auth"
+import NextAuth, { NextAuthOptions, RequestInternal } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compareHash, hashPassword } from "../../../../lib/password-hashing"
 import { randomUUID } from "crypto"
 import { userAgent } from "next/server"
+import { UserType } from "@prisma/client"
 
 export enum ProviderTypes {
     GithubInstructor = "github-instructor",
@@ -40,6 +41,7 @@ async function authorize(credentials: Record<"email" | "password" | "providerTyp
                 id: userData.user_id,
                 image: userData.profile_picture,
                 userId: userData.user_id,
+                userType: userData.user_type
             }
             console.log("Authorise finished")
             return user
@@ -50,8 +52,7 @@ async function authorize(credentials: Record<"email" | "password" | "providerTyp
     }
 }
 
-
-export const handler = NextAuth({
+export const authOptions:NextAuthOptions = {
     providers: [
         GithubProvider({
             id: ProviderTypes.GithubInstructor,
@@ -63,7 +64,8 @@ export const handler = NextAuth({
             id: ProviderTypes.GithubLearner,
             clientId: process.env.GITHUB_LEARNER_ID ?? "",
             clientSecret: process.env.GITHUB_LEARNER_SECRET ?? "",
-            name: ProviderTypes.GithubLearner
+            name: ProviderTypes.GithubLearner,
+            
         }),
         GoogleProvider({
             id: ProviderTypes.GoogleInstructor,
@@ -98,6 +100,9 @@ export const handler = NextAuth({
             }, authorize
         })
     ],
+    session: {
+        strategy: "jwt",
+    },
     pages: {
         signIn: '/auth/signIn',
         // signOut: '/auth/signout',
@@ -142,10 +147,14 @@ export const handler = NextAuth({
             }
         },
         async jwt(params) {
-            console.log(params.account?.providerAccountId, params.profile, params.session, params.user, params.token)
+            // console.log(params)
+            // console.log(params.account?.providerAccountId, params.profile, params.session, params.user, params.token)
             if (params.account && (params.account.provider == ProviderTypes.CredentialsInstructor || params.account.provider == ProviderTypes.CredentialsLearner) && params.user?.id) {
                 // @ts-ignore
                 params.token.userId = params.user?.userId
+                //@ts-ignore
+                params.token.userType = params.user?.userType
+                
             } else if (params.account) {
                 const userType = (params.account.provider == ProviderTypes.GithubInstructor || params.account.provider == ProviderTypes.GoogleInstructor) ? "Instructor" : "Learner";
                 const registerMethod = (params.account.provider == ProviderTypes.GithubInstructor || params.account.provider == ProviderTypes.GithubLearner) ? "Github" : "Google";
@@ -157,15 +166,19 @@ export const handler = NextAuth({
                     }
                 })
                 params.token.userId = userData.user_id;
+                params.token.userType = userType;
             }
             return params.token
         },
         async session(params) {
             // @ts-ignore
             params.session.user!.userId = params.token.userId;
+            //@ts-ignore
+            params.session.user!.userType = params.token.userType
             return params.session
         },
     }
-})
+}
+export const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

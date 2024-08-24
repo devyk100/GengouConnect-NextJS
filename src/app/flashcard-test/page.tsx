@@ -27,8 +27,8 @@ fawfswe
     return (
         <>
             {/* <FlashcardView flashcardData={demo}/> */}
-            {/* <FlashcardEditorView /> */}
-            <MarkdownEditor />
+            <FlashcardEditorView />
+            {/* <MarkdownEditor /> */}
         </>
     )
 }

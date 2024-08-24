@@ -339,7 +339,7 @@ export default ({className, editable, containerClassName, content, onUpdate}: {
   return (
     <>
       <div className={cn("", containerClassName)}>
-        <EditorProvider slotBefore={editable ? <MenuBar />: <></>} immediatelyRender={false}   extensions={extensions} editorProps={{attributes: {
+        <EditorProvider autofocus slotBefore={editable ? <MenuBar />: <></>} immediatelyRender={false}   extensions={extensions} editorProps={{attributes: {
           class: className||""
         }}}  editable={editable} content={content} onUpdate={({editor}) => {
           if(onUpdate){
