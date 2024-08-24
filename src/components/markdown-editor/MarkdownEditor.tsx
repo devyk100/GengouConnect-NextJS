@@ -6,7 +6,7 @@ import ListItem from '@tiptap/extension-list-item'
 import TextStyle from '@tiptap/extension-text-style'
 import { EditorProvider, Node, useCurrentEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button } from '../ui/button'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
 import Image from 'next/image'
@@ -26,23 +26,25 @@ import BulletListIcon from "../../../public/editorIcons/bullet.svg"
 import OrderedListIcon from "../../../public/editorIcons/list.svg"
 import BlockQuoteIcon from "../../../public/editorIcons/blockquote.svg"
 import HorizontalRuleIcon from "../../../public/editorIcons/hr.svg"
-import HardbreakIcon from "../../../public/editorIcons/h3.svg"
 import UndoIcon from "../../../public/editorIcons/undo.svg"
 import RedoIcon from "../../../public/editorIcons/redo.svg"
 import ParagraphIcon from "../../../public/editorIcons/paragraph.svg"
+import ClearIcon from "../../../public/editorIcons/clear.svg"
+import ClearNodeIcon from "../../../public/editorIcons/clear-node.svg"
+import HardbreakIcon from "../../../public/editorIcons/hardbreak.svg"
+import { cn } from '@/lib/utils'
 
 const MenuBar = () => {
   const { editor } = useCurrentEditor()
-
   if (!editor) {
     return null
   }
 
   return (
     <div className="control-group ">
-      <div className="flex flex-row overflow-x-scroll">
+      <div className="flex flex-wrap auto-rows-auto overflow-x-auto w-full">
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={
             !editor.can()
@@ -51,13 +53,13 @@ const MenuBar = () => {
               .toggleBold()
               .run()
           }
-          
+
           className={editor.isActive('bold') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='bold' src={BoldIcon} height={100} width={100} className='w-[20px] h-[20px]'/>
+          <Image alt='bold' src={BoldIcon} height={20} width={20} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleItalic().run()}
           disabled={
             !editor.can()
@@ -68,10 +70,10 @@ const MenuBar = () => {
           }
           className={editor.isActive('italic') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-                    <Image alt='Italic' src={ItalicIcon} height={100} width={100} className='w-[18px] h-[18px]'/>
+          <Image alt='Italic' src={ItalicIcon} height={100} width={100} className='w-[18px] h-[18px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={
             !editor.can()
@@ -82,10 +84,10 @@ const MenuBar = () => {
           }
           className={editor.isActive('strike') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-                      <Image alt='strike' src={StrikethroughIcon} height={100} width={100} className='w-[20px] h-[20px]'/>
+          <Image alt='strike' src={StrikethroughIcon} height={100} width={100} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleCode().run()}
           disabled={
             !editor.can()
@@ -96,103 +98,103 @@ const MenuBar = () => {
           }
           className={editor.isActive('code') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-                      <Image alt='Code-inline' src={InlineCodeIcon} height={100} width={100} className='w-[18px] h-[18px]'/>
+          <Image alt='Code-inline' src={InlineCodeIcon} height={100} width={100} className='w-[18px] h-[18px]' />
         </Button>
         <Button
-        variant={"icon-button"} onClick={() => editor.chain().focus().unsetAllMarks().run()}>
-                      <Image alt='Clear marks' src={ItalicIcon} height={100} width={100} className='w-[18px] h-[18px]'/>
+          variant={"icon-button"} onClick={() => editor.chain().focus().unsetAllMarks().run()}>
+          <Image alt='Clear marks' src={ClearIcon} height={100} width={100} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"} onClick={() => editor.chain().focus().clearNodes().run()}>
-          Clear nodes
+          variant={"icon-button"} onClick={() => editor.chain().focus().clearNodes().run()}>
+          <Image alt='Clear node' src={ClearNodeIcon} height={100} width={100} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().setParagraph().run()}
           className={editor.isActive('paragraph') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='paragraph' src={ParagraphIcon} height={100} width={100} className='w-[17px] h-[17px]'/>
+          <Image alt='paragraph' src={ParagraphIcon} height={100} width={100} className='w-[17px] h-[17px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           className={editor.isActive('heading', { level: 1 }) ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-                      <Image alt='heading 1' src={H1Icon} height={100} width={100} className='w-[25px] h-[25px]'/>
+          <Image alt='heading 1' src={H1Icon} height={100} width={100} className='w-[25px] h-[25px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={editor.isActive('heading', { level: 2 }) ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='heading 2' src={H2Icon} height={100} width={100} className='w-[25px] h-[25px]'/>
+          <Image alt='heading 2' src={H2Icon} height={100} width={100} className='w-[25px] h-[25px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           className={editor.isActive('heading', { level: 3 }) ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-         <Image alt='heading 3' src={H3Icon} height={100} width={100} className='w-[25px] h-[25px]'/>
+          <Image alt='heading 3' src={H3Icon} height={100} width={100} className='w-[25px] h-[25px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
           className={editor.isActive('heading', { level: 4 }) ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='heading 4' src={H4Icon} height={100} width={100} className='w-[25px] h-[25px]'/>
+          <Image alt='heading 4' src={H4Icon} height={100} width={100} className='w-[25px] h-[25px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
           className={editor.isActive('heading', { level: 5 }) ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='heading 5' src={H5Icon} height={100} width={100} className='w-[25px] h-[25px]'/>
+          <Image alt='heading 5' src={H5Icon} height={100} width={100} className='w-[25px] h-[25px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
           className={editor.isActive('heading', { level: 6 }) ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='heading 6' src={H6Icon} height={100} width={100} className='w-[25px] h-[25px]'/>
+          <Image alt='heading 6' src={H6Icon} height={100} width={100} className='w-[25px] h-[25px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={editor.isActive('bulletList') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='unordered list' src={BulletListIcon} height={100} width={100} className='w-[18px] h-[18px]'/>
+          <Image alt='unordered list' src={BulletListIcon} height={100} width={100} className='w-[18px] h-[18px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={editor.isActive('orderedList') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='ordered list' src={OrderedListIcon} height={100} width={100} className='w-[20px] h-[20px]'/>
+          <Image alt='ordered list' src={OrderedListIcon} height={100} width={100} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           className={editor.isActive('codeBlock') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='code block' src={CodeBlockIcon} height={100} width={100} className='w-[22px] h-[22px]'/>
+          <Image alt='code block' src={CodeBlockIcon} height={100} width={100} className='w-[22px] h-[22px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={editor.isActive('blockquote') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='block quote' src={BlockQuoteIcon} height={100} width={100} className='w-[20px] h-[20px]'/>
+          <Image alt='block quote' src={BlockQuoteIcon} height={100} width={100} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"} onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-          <Image alt='horizontal rule' src={HorizontalRuleIcon} height={100} width={100} className='w-[20px] h-[20px]'/>
+          variant={"icon-button"} onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+          <Image alt='horizontal rule' src={HorizontalRuleIcon} height={100} width={100} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"} onClick={() => editor.chain().focus().setHardBreak().run()}>
-          Hard break
+          variant={"icon-button"} onClick={() => editor.chain().focus().setHardBreak().run()}>
+          <Image alt='hard break' src={HardbreakIcon} height={100} width={100} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().undo().run()}
           disabled={
             !editor.can()
@@ -202,10 +204,10 @@ const MenuBar = () => {
               .run()
           }
         >
-          <Image alt='undo' src={UndoIcon} height={100} width={100} className='w-[20px] h-[20px]'/>
+          <Image alt='undo' src={UndoIcon} height={100} width={100} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().redo().run()}
           disabled={
             !editor.can()
@@ -215,14 +217,39 @@ const MenuBar = () => {
               .run()
           }
         >
-          <Image alt='redo' src={RedoIcon} height={100} width={100} className='w-[20px] h-[20px]'/>
+          <Image alt='redo' src={RedoIcon} height={100} width={100} className='w-[20px] h-[20px]' />
         </Button>
         <Button
-        variant={"icon-button"}
+          variant={"icon-button"}
           onClick={() => editor.chain().focus().setColor('#958DF1').run()}
           className={editor.isActive('textStyle', { color: '#958DF1' }) ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          Purple
+          <div className='w-[20px] h-[20px] p-[2px] bg-[#958DF1] '>
+          </div>
+        </Button>
+        <Button
+          variant={"icon-button"}
+          onClick={() => editor.chain().focus().setColor('#14a0fc').run()}
+          className={editor.isActive('textStyle', { color: '#14a0fc' }) ? 'bg-secondary dark:bg-lime-500' : ''}
+        >
+          <div className='w-[20px] h-[20px] p-[2px] bg-[#14a0fc] '>
+          </div>
+        </Button>
+        <Button
+          variant={"icon-button"}
+          onClick={() => editor.chain().focus().setColor('#f77620').run()}
+          className={editor.isActive('textStyle', { color: '#f77620' }) ? 'bg-secondary dark:bg-lime-500' : ''}
+        >
+          <div className='w-[20px] h-[20px] p-[2px] bg-[#f77620] '>
+          </div>
+        </Button>
+        <Button
+          variant={"icon-button"}
+          onClick={() => editor.chain().focus().setColor('red').run()}
+          className={editor.isActive('textStyle', { color: 'red ' }) ? 'bg-secondary dark:bg-lime-500' : ''}
+        >
+          <div className='w-[20px] h-[20px] p-[2px] bg-red-500 '>
+          </div>
         </Button>
       </div>
     </div>
@@ -231,6 +258,7 @@ const MenuBar = () => {
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
+  //@ts-ignore
   TextStyle.configure({ types: [ListItem.name] }),
   StarterKit.configure({
     bulletList: {
@@ -273,7 +301,7 @@ const extensions = [
       }
     },
     heading: {
-      levels: [1,2,3,4,5,6],
+      levels: [1, 2, 3, 4, 5, 6],
       HTMLAttributes: {
         class: "font-extrabold py-1 border-b-[1px] border-lime-500"
       }
@@ -284,51 +312,43 @@ const extensions = [
       }
     }
 
-  
+
   }),
 ]
 
 const content = `
-<h2>
-  Hi there,
-</h2>
-<p>
-  this is a <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-</p>
-<ul>
-  <li>
-    That’s a bullet list with one …
-  </li>
-  <li>
-    … or two list items.
-  </li>
-</ul>
-<p>
-  Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-</p>
-<pre><code class="language-css">body {
-  display: none;
-}</code></pre>
-<p>
-  I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-</p>
-<blockquote>
-  Wow, that’s amazing. Good work, boy! 👏
-  <br />
-  — Mom
-</blockquote>
-`
+<h2 class="font-extrabold py-1 border-b-[1px] border-lime-500">Hi there,</h2><p>this is a <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:</p><ul class="list-disc"><li><p>That’s a bullet list with one …</p></li><li><p>… or two list items.</p></li></ul><p>Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:</p><pre><code class="language-css">body {
+  display: none;fawfaw
+}</code></pre><p>fwafw fawI know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.</p><blockquote class="bg-lime-400 dark:bg-lime-700 dark:text-white border-l-4 border-blue-500 pl-4 py-3 text-gray-700 italic"><p>Wow, that’s amazing. Good work, boy! 👏 <br>— Mom</p></blockquote>`
 
-export default () => {
+enum VariantType {
+  Editor,
+  Renderer
+}
+
+export default ({className, editable, containerClassName, content, onUpdate}: {
+  className?:string;
+  editable?: boolean;
+  containerClassName?: string;
+  content?: string;
+  onUpdate?: (val:string) => void
+}) => {
+  if(editable == undefined){
+    editable = true;
+  }
   return (
-  <>
-  <span className=' block border-b-2 mt-10'></span>
-  <div className=' '>
-
-    <EditorProvider slotBefore={<MenuBar />} immediatelyRender={false}  extensions={extensions} content={content} onUpdate={(props) => {
-      console.log(props)
-    }}></EditorProvider>
-    </div>
+    <>
+      <div className={cn("", containerClassName)}>
+        <EditorProvider slotBefore={editable ? <MenuBar />: <></>} immediatelyRender={false}   extensions={extensions} editorProps={{attributes: {
+          class: className||""
+        }}}  editable={editable} content={content} onUpdate={({editor}) => {
+          if(onUpdate){
+            onUpdate(editor.getHTML())
+          }
+        }} 
+        
+        ></EditorProvider>
+      </div>
     </>
   )
 }

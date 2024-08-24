@@ -6,7 +6,7 @@ import { FlashcardData } from "@/lib/flashcard-types";
 
 export default function Page(){
     const demo: FlashcardData = {
-        backSide: "something on the back side.\n----\n# *haha*",
+        backSide: `<ul class="list-disc"><li><p>something else huh <em>dude</em> <strong>crazyfafwa</strong></p></li></ul>`,
         frontSide: `something on the front side. **haha0** 
         **fnaowif**
 *miofawmge*
