@@ -4,6 +4,7 @@ import { CardContent } from "../ui/card"
 import { Children, useEffect, useState } from "react"
 import Image from "next/image"
 import { Separator } from "../ui/separator"
+import MarkdownEditor from "../markdown-editor/MarkdownEditor"
 export function CustomMarkdown({ value }: {
     value: string
 }) {
@@ -57,7 +58,7 @@ export default function FlashcardContent({ flashcardData, isFlipped }: {
         <>
             <CardContent className="leading-7">
                 {imageUrl? <Image alt="something"  src={imageUrl} unselectable="off" aria-readonly unoptimized height={100} width={100} layout="responsive"/>:null}
-                <CustomMarkdown value={isFlipped? flashcardData.backSide : flashcardData.frontSide} />
+                <MarkdownEditor content={isFlipped? flashcardData.backSide: flashcardData.frontSide} editable={false} />
             </CardContent>
         </>
     )

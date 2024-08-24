@@ -88,8 +88,8 @@ export default function MarkdownEditor(){
     h.insert('n');
     h.insert('k');
     h.moveLeft();
-    console.log(h.getString())
     h.insert('l');
+    console.log(h.getString())
     
   },[])
   return (

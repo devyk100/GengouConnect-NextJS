@@ -1,4 +1,3 @@
-import FlashcardEditorView from "@/components/flashcard-editor/flashcardEditorView";
 import FlashcardView from "@/components/flashcard/flashcardView";
 // import { ForwardRefEditor } from "@/components/markdown-editor/ForwardRefEditor";
 import MarkdownEditor from "@/components/markdown-editor/MarkdownEditor";
@@ -7,15 +6,7 @@ import { FlashcardData } from "@/lib/flashcard-types";
 export default function Page(){
     const demo: FlashcardData = {
         backSide: `<ul class="list-disc"><li><p>something else huh <em>dude</em> <strong>crazyfafwa</strong></p></li></ul>`,
-        frontSide: `something on the front side. **haha0** 
-        **fnaowif**
-*miofawmge*
-
-
-> ~~-----fafwaf~~
----
-fawfswe
-        `,
+        frontSide: `<ul class="list-disc"><li><p>something else huh <em>dude</em> <strong>crazyfafwa</strong></p></li></ul>`,
         reviewFactor: 1,
         reviewInterval: 1,
         reviewPriority: 1,
@@ -26,9 +17,9 @@ fawfswe
     }
     return (
         <>
-            {/* <FlashcardView flashcardData={demo}/> */}
-            {/* <FlashcardEditorView /> */}
-            <MarkdownEditor />
+            <FlashcardView flashcardData={demo}/>
+            {/* <FlashcardEditorView />
+            <MarkdownEditor /> */}
         </>
     )
 }
