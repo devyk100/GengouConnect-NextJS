@@ -36,8 +36,8 @@ model User {
   register_method              RegisterMethod
   is_verified                  Boolean
   is_user_id_set               Boolean
-  is_password_set             Boolean
-  is_phone_set                Boolean
+  is_password_set              Boolean
+  is_phone_set                 Boolean
   lessons                      Lesson[]
   contents                     ExternalContentItem[]
   LiveClassToInstructorMapping LiveClassToInstructorMapping[]
@@ -47,6 +47,7 @@ model User {
   past_experiences             String?
   CourseToInstructorMapping    CourseToInstructorMapping[]
   CourseToLearnerMapping       CourseToLearnerMapping[]
+  FlashcardDeckToCopiers       FlashcardDeckToCopiers[]
 
   @@index([user_id])
   @@index([email_id])
@@ -311,64 +312,40 @@ model AssignmentToQuestionMapping {
 // ------------------------------------------------------------------------------------------------------------
 
 // -------------------------- Flashcards ----------------------------------------------------------------------
-model FlashCardDeck {
-  id            Int                  @id @default(sequence())
-  title         String
-  flashcard     FlashCard[]
-  userflashcard UserFlashCardDeck[]
+model FlashcardDeck {
+  id                          Int                      @id @default(sequence())
+  title                       String
+  flashcards                  Flashcard[]
+  FlashcardDeckToCopiersDecks FlashcardDeckToCopiers[] @relation("OriginalDecks")
+  FlashcardDeckToCopiers      FlashcardDeckToCopiers[] @relation("CopiedDecks")
 }
 
-model FlashCard {
-  id                 Int             @id @default(sequence())
-  front_side         String
-  back_side          String
-  question_audio_url String?
-  answer_audio_url   String?
-  question_image_url String?
-  answer_image_url   String?
-  flashcarddeck_id  Int
-  flashcarddeck     FlashCardDeck  @relation(fields: [flashcarddeck_id], references: [id])
-  userflashcard      UserFlashCard[]
+model Flashcard {
+  id          Int           @id @default(sequence())
+  front_side  String
+  rear_side   String
+  front_audio String?
+  rear_audio  String?
+  front_image String?
+  rear_image  String?
+  deck_id     Int
+  decks       FlashcardDeck @relation(fields: [deck_id], references: [id])
 }
 
-model UserFlashCardDeck {
-  id                  Int             @id @default(sequence())
-  flashcarddeck_id   Int
-  flashcarddeck      FlashCardDeck  @relation(fields: [flashcarddeck_id], references: [id])
-  graduating_interval Int
-  easy_interval       Int
-  new_cards_per_day   Int
-  max_reviews_per_day Int
-  learning_steps      BigInt // encode and decode it well
-  userflashcard       UserFlashCard[]
-
-  @@index([flashcarddeck_id])
+model FlashcardDeckToEditors {
+  id      Int @id @default(sequence())
+  deck_id Int
+  user_id Int
 }
 
-model UserFlashCard {
-  id                          Int                @id @default(sequence())
-  userflashcarddeck_id       Int
-  userflashcarddeck          UserFlashCardDeck @relation(fields: [userflashcarddeck_id], references: [id])
-  flashcard_id                Int
-  flashcard                   FlashCard          @relation(fields: [flashcard_id], references: [id])
-  modified_front_side         String
-  modified_back_side          String
-  modified_question_audio_url String?
-  modified_answer_audio_url   String?
-  modified_question_image_url String?
-  modified_answer_image_url   String?
-
-  review_factor   Int // xx.xx --> xxxxx please, 100a
-  review_interval Int
-  priority_num    Int
-
-  @@index([flashcard_id])
-  @@index([userflashcarddeck_id])
-  @@index([priority_num])
-  @@index([priority_num, review_interval, review_factor])
-  @@index([review_interval])
-  @@index([review_factor])
-
+model FlashcardDeckToCopiers {
+  id              Int            @id @default(sequence())
+  deck_id         Int
+  deck            FlashcardDeck  @relation("OriginalDecks", fields: [deck_id], references: [id])
+  user_id         String
+  user            User           @relation(fields: [user_id], references: [user_id])
+  copied_deck_id  Int
+  copied_deck     FlashcardDeck  @relation("CopiedDecks", fields: [copied_deck_id], references: [id])
 }
 
 // ---------------------------------------------------------------------------------------------------

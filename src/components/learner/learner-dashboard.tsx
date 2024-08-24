@@ -29,7 +29,7 @@ export default function LearnerDashboard({ session }: {
             <section className="w-screen flex flex-col gap-2 items-center justify-center">
                 <div className="mt-5 px-4">
                     <div className="w-full text-3xl font-extrabold px-2 mt-2">
-                        Welcome {session?.user?.name?.split(" ")[0]! + " " + session?.user?.name?.split(" ")[1]} 👋,
+                        Welcome {session?.user?.name?.split(" ")[0]! + " " + (session?.user?.name?.split(" ")[1]??"")} 👋,
                     </div>
                     <div className="w-full text-3xl font-semibold mt-3 px-2">
                         what would you like to do now?

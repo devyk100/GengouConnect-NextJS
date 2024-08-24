@@ -5,9 +5,7 @@ import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compareHash, hashPassword } from "../../../../lib/password-hashing"
 import { randomUUID } from "crypto"
-import { userAgent } from "next/server"
-import { UserType } from "@prisma/client"
-
+import jwt, { sign } from "jsonwebtoken"
 export enum ProviderTypes {
     GithubInstructor = "github-instructor",
     GithubLearner = "github-learner",
@@ -154,7 +152,9 @@ export const authOptions:NextAuthOptions = {
                 params.token.userId = params.user?.userId
                 //@ts-ignore
                 params.token.userType = params.user?.userType
-                
+                //@ts-ignore
+                const token = sign({userId:params.user?.userId}, process.env.GLOBAL_AUTH_SECRET as string)
+                params.token.backendToken = token;
             } else if (params.account) {
                 const userType = (params.account.provider == ProviderTypes.GithubInstructor || params.account.provider == ProviderTypes.GoogleInstructor) ? "Instructor" : "Learner";
                 const registerMethod = (params.account.provider == ProviderTypes.GithubInstructor || params.account.provider == ProviderTypes.GithubLearner) ? "Github" : "Google";
@@ -165,8 +165,10 @@ export const authOptions:NextAuthOptions = {
                         register_method: registerMethod
                     }
                 })
+                const token = sign({userId:userData.user_id}, process.env.GLOBAL_AUTH_SECRET as string)
                 params.token.userId = userData.user_id;
                 params.token.userType = userType;
+                params.token.backendToken = token;
             }
             return params.token
         },
@@ -175,6 +177,8 @@ export const authOptions:NextAuthOptions = {
             params.session.user!.userId = params.token.userId;
             //@ts-ignore
             params.session.user!.userType = params.token.userType
+            //@ts-ignore
+            params.session.user!.backendToken = params.token.backendToken;
             return params.session
         },
     }

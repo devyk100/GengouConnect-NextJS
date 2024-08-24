@@ -4,6 +4,7 @@ import LearnerDashboard from "@/components/learner/learner-dashboard";
 
 export default async function Page(){
 const user = await getServerSession(authOptions)
+console.log(user)
 //@ts-ignore
 const userType = user?.user?.userType;
     return (

@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "generate": "drizzle-kit generate",
-    "migrate": "tsx db/migrate.ts"
+    "lint": "next lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -33,6 +31,7 @@
     "@tiptap/react": "^2.6.6",
     "@tiptap/starter-kit": "^2.6.6",
     "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/validator": "^13.12.0",
     "@uiw/react-markdown-editor": "^6.1.2",
     "bcrypt": "^5.1.1",
@@ -40,6 +39,7 @@
     "clsx": "^2.1.1",
     "custom-markdown-editor": "^0.0.0",
     "fabric": "^6.3.0",
+    "jsonwebtoken": "^9.0.2",
     "markdown-to-jsx": "^7.4.7",
     "mdast-util-directive": "^3.0.0",
     "next": "14.2.5",
