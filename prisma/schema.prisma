@@ -315,37 +315,65 @@ model AssignmentToQuestionMapping {
 model FlashcardDeck {
   id                          Int                      @id @default(sequence())
   title                       String
+  max_review_limit_per_day    Int
+  graduating_interval         Int
+  learning_steps              String
+  new_cards_limit_per_day     Int
+  easy_interval               Int
   flashcards                  Flashcard[]
   FlashcardDeckToCopiersDecks FlashcardDeckToCopiers[] @relation("OriginalDecks")
   FlashcardDeckToCopiers      FlashcardDeckToCopiers[] @relation("CopiedDecks")
+
+  @@index([id])
+  @@index([title])
 }
 
 model Flashcard {
-  id          Int           @id @default(sequence())
-  front_side  String
-  rear_side   String
-  front_audio String?
-  rear_audio  String?
-  front_image String?
-  rear_image  String?
-  deck_id     Int
-  decks       FlashcardDeck @relation(fields: [deck_id], references: [id])
+  id              Int     @id @default(sequence())
+  front_side      String
+  rear_side       String
+  front_audio     String?
+  rear_audio      String?
+  front_image     String?
+  rear_image      String?
+  review_factor   Int
+  review_interval Int
+
+  priority_num            Int
+  unreviewed_priority_num Int
+  deck_id                 Int
+  decks                   FlashcardDeck @relation(fields: [deck_id], references: [id])
+
+  @@index([id])
+  @@index([priority_num])
+  @@index([review_factor])
+  @@index([review_interval])
+  @@index([unreviewed_priority_num])
+  @@index([deck_id])
 }
 
 model FlashcardDeckToEditors {
   id      Int @id @default(sequence())
   deck_id Int
   user_id Int
+
+  @@index([id])
+  @@index([deck_id])
+  @@index([user_id])
 }
 
 model FlashcardDeckToCopiers {
-  id              Int            @id @default(sequence())
-  deck_id         Int
-  deck            FlashcardDeck  @relation("OriginalDecks", fields: [deck_id], references: [id])
-  user_id         String
-  user            User           @relation(fields: [user_id], references: [user_id])
-  copied_deck_id  Int
-  copied_deck     FlashcardDeck  @relation("CopiedDecks", fields: [copied_deck_id], references: [id])
+  id             Int           @id @default(sequence())
+  deck_id        Int
+  deck           FlashcardDeck @relation("OriginalDecks", fields: [deck_id], references: [id])
+  user_id        String
+  user           User          @relation(fields: [user_id], references: [user_id])
+  copied_deck_id Int
+  copied_deck    FlashcardDeck @relation("CopiedDecks", fields: [copied_deck_id], references: [id])
+  @@index([id])
+  @@index([deck_id])
+  @@index([user_id])
+  @@index([copied_deck_id])
 }
 
 // ---------------------------------------------------------------------------------------------------
