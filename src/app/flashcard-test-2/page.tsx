@@ -26,9 +26,9 @@ fawfswe
     }
     return (
         <>
-            {/* <FlashcardView flashcardData={demo}/> */}
-            {/* <FlashcardEditorView /> */}
-            <MarkdownEditor />
+            <FlashcardView flashcardData={demo}/>
+            {/* <FlashcardEditorView />
+            <MarkdownEditor /> */}
         </>
     )
 }
