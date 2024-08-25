@@ -48,6 +48,7 @@ model User {
   CourseToInstructorMapping    CourseToInstructorMapping[]
   CourseToLearnerMapping       CourseToLearnerMapping[]
   FlashcardDeckToCopiers       FlashcardDeckToCopiers[]
+  FlashcardDeckToEditors       FlashcardDeckToEditors[]
 
   @@index([user_id])
   @@index([email_id])
@@ -323,6 +324,7 @@ model FlashcardDeck {
   flashcards                  Flashcard[]
   FlashcardDeckToCopiersDecks FlashcardDeckToCopiers[] @relation("OriginalDecks")
   FlashcardDeckToCopiers      FlashcardDeckToCopiers[] @relation("CopiedDecks")
+  FlashcardDeckToEditors      FlashcardDeckToEditors[]
 
   @@index([id])
   @@index([title])
@@ -340,7 +342,7 @@ model Flashcard {
   review_interval         Int
   due_date                DateTime
   unreviewed_priority_num Int
-  deck_id                 Int 
+  deck_id                 Int
   decks                   FlashcardDeck @relation(fields: [deck_id], references: [id])
 
   @@index([due_date])
@@ -352,9 +354,11 @@ model Flashcard {
 }
 
 model FlashcardDeckToEditors {
-  id      Int @id @default(sequence())
+  id      Int           @id @default(sequence())
   deck_id Int
-  user_id Int
+  user_id String
+  decks   FlashcardDeck @relation(fields: [deck_id], references: [id])
+  user    User          @relation(fields: [user_id], references: [user_id])
 
   @@index([id])
   @@index([deck_id])

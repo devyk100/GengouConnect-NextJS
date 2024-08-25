@@ -5,6 +5,7 @@ import { Children, useEffect, useState } from "react"
 import Image from "next/image"
 import { Separator } from "../ui/separator"
 import MarkdownEditor from "../markdown-editor/MarkdownEditor"
+import { EditorStateType, useFlashcardEditorState } from "@/state/store"
 export function CustomMarkdown({ value }: {
     value: string
 }) {
@@ -37,9 +38,11 @@ export function CustomMarkdown({ value }: {
 
 export default function FlashcardContent({ flashcardData, isFlipped }: {
     flashcardData: FlashcardData,
-    isFlipped: boolean
+    isFlipped: boolean,
+    editable?: boolean
 }) {
     const [imageUrl, setImageUrl] = useState<string | undefined>()
+    const {editorState} = useFlashcardEditorState()
     useEffect(() => {
         if(isFlipped){
             setImageUrl(flashcardData.answerImageUrl)
@@ -58,7 +61,7 @@ export default function FlashcardContent({ flashcardData, isFlipped }: {
         <>
             <CardContent className="leading-7">
                 {imageUrl? <Image alt="something"  src={imageUrl} unselectable="off" aria-readonly unoptimized height={100} width={100} layout="responsive"/>:null}
-                <MarkdownEditor content={isFlipped? flashcardData.backSide: flashcardData.frontSide} editable={false} />
+                <MarkdownEditor content={(editorState == EditorStateType.newCard) ? (""): isFlipped? flashcardData.backSide: flashcardData.frontSide} editable={editorState == EditorStateType.reviewCard ? false : true} />
             </CardContent>
         </>
     )

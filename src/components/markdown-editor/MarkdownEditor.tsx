@@ -34,15 +34,17 @@ import ClearNodeIcon from "../../../public/editorIcons/clear-node.svg"
 import HardbreakIcon from "../../../public/editorIcons/hardbreak.svg"
 import { cn } from '@/lib/utils'
 
-const MenuBar = () => {
+const MenuBar = ({className}: {
+  className:string
+}) => {
   const { editor } = useCurrentEditor()
   if (!editor) {
     return null
   }
 
   return (
-    <div className="control-group ">
-      <div className="flex flex-wrap auto-rows-auto overflow-x-auto w-full">
+    <div className="control-group">
+      <div className={cn("flex flex-wrap auto-rows-auto overflow-x-auto", className)}>
         <Button
           variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -326,12 +328,15 @@ enum VariantType {
   Renderer
 }
 
-export default ({className, editable, containerClassName, content, onUpdate}: {
+export default ({className, editable, containerClassName, content, onUpdate,menuBarClassName,onFocus,onBlur}: {
   className?:string;
   editable?: boolean;
   containerClassName?: string;
+  menuBarClassName? :string;
   content?: string;
   onUpdate?: (val:string) => void
+  onFocus?:() => void
+  onBlur?: () => void
 }) => {
   if(editable == undefined){
     editable = true;
@@ -339,14 +344,13 @@ export default ({className, editable, containerClassName, content, onUpdate}: {
   return (
     <>
       <div className={cn("", containerClassName)}>
-        <EditorProvider autofocus slotBefore={editable ? <MenuBar />: <></>} immediatelyRender={false}   extensions={extensions} editorProps={{attributes: {
+        <EditorProvider onFocus={onFocus} onBlur={onBlur}  autofocus slotBefore={editable ? <MenuBar className={menuBarClassName||""}/>: <></>} immediatelyRender={false}   extensions={extensions} editorProps={{attributes: {
           class: className||""
         }}}  editable={editable} content={content} onUpdate={({editor}) => {
           if(onUpdate){
             onUpdate(editor.getHTML())
           }
         }} 
-        
         ></EditorProvider>
       </div>
     </>

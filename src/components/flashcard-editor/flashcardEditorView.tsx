@@ -7,6 +7,9 @@ import { Card, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 import { Suspense, useState } from "react";
 import dynamic from "next/dynamic";
+import { useActiveDeck } from "@/state/store";
+import MarkdownEditor from "../markdown-editor/MarkdownEditor";
+import { Input } from "../ui/input";
 const FlashcardEditor = dynamic(() => import('./flashcardEditor'), {
   // suspense: true,
   loading: () => <EditorSkeleton />,
@@ -51,51 +54,10 @@ function EditorSkeleton() {
 
 export default function FlashcardEditorView() {
   const [isFlipped, setIsFlipped] = useState(false)
+  const {activeDeck} = useActiveDeck()
   return (
     <>
-      <div className="flex w-screen h-screen items-center justify-center overflow-x-hidden p-0 m-0">
-        <Card className="overflow-x-hidden -mt-28 ">
-          {/* <div className="h-[600px] overflow-y-scroll"> */}
-          <ScrollArea className="h-[700px] rounded-md pt-3 pb-5 w-full mt-4 p-2 ">
-            <CardHeader className="">
-              <CardTitle className="text-center text-lg flex w-full justify-between relative">
-                {/* {isFlipped?
-                                 <Button className="absolute rounded-full w-[55px] flex h-[55px] top-0 left-0 -m-3" variant="secondary" onClick={() => {
-                                  setIsFlipped(false)
-                                  }}>
-                                  <Image alt="back" src={backSvg} className="h-[55px] w-[55px]" />
-                                  </Button>: null
-                                  } */}
-                <span className="w-full text-xl">
-                  Flashcard Editor
-                </span>
-              </CardTitle>
-            </CardHeader>
-
-            {/* <Suspense fallback={<EditorSkeleton />}> */}
-            {/* <EditorSkeleton /> */}
-              <FlashcardEditor flashcardData={demo} />
-            {/* </Suspense> */}
-
-          </ScrollArea>
-          <CardFooter>
-            <div className="flex w-full justify-between p-0 -m-2 sm:m-0">
-              {
-                !isFlipped ? <>
-                  <FlashcardButton time="" type={FlashcardButtonType.showAnswer} onClick={(event) => {
-                    setIsFlipped(!isFlipped);
-                  }}></FlashcardButton>
-                </> : <>
-                  <FlashcardButton time="something" type={FlashcardButtonType.again}></FlashcardButton>
-                  <FlashcardButton time="something" type={FlashcardButtonType.hard}></FlashcardButton>
-                  <FlashcardButton time="something" type={FlashcardButtonType.good}></FlashcardButton>
-                  <FlashcardButton time="something" type={FlashcardButtonType.easy}></FlashcardButton>
-                </>
-              }
-            </div>
-          </CardFooter>
-        </Card>
-      </div>
+  <FlashcardEditor flashcardData={demo}/>
     </>
   )
 }
