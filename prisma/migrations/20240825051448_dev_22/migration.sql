@@ -23,10 +23,10 @@ CREATE TABLE "User" (
     "phone" STRING NOT NULL,
     "profile_picture" STRING NOT NULL,
     "password" STRING NOT NULL,
+    "is_password_set" BOOL NOT NULL,
     "register_method" "RegisterMethod" NOT NULL,
     "is_verified" BOOL NOT NULL,
     "is_user_id_set" BOOL NOT NULL,
-    "is_password_set" BOOL NOT NULL,
     "is_phone_set" BOOL NOT NULL,
     "past_experiences" STRING,
 
@@ -269,7 +269,7 @@ CREATE TABLE "Flashcard" (
     "rear_image" STRING,
     "review_factor" INT4 NOT NULL,
     "review_interval" INT4 NOT NULL,
-    "priority_num" INT4 NOT NULL,
+    "due_date" TIMESTAMP(3) NOT NULL,
     "unreviewed_priority_num" INT4 NOT NULL,
     "deck_id" INT4 NOT NULL,
 
@@ -465,10 +465,10 @@ CREATE INDEX "FlashcardDeck_id_idx" ON "FlashcardDeck"("id");
 CREATE INDEX "FlashcardDeck_title_idx" ON "FlashcardDeck"("title");
 
 -- CreateIndex
-CREATE INDEX "Flashcard_id_idx" ON "Flashcard"("id");
+CREATE INDEX "Flashcard_due_date_idx" ON "Flashcard"("due_date");
 
 -- CreateIndex
-CREATE INDEX "Flashcard_priority_num_idx" ON "Flashcard"("priority_num");
+CREATE INDEX "Flashcard_id_idx" ON "Flashcard"("id");
 
 -- CreateIndex
 CREATE INDEX "Flashcard_review_factor_idx" ON "Flashcard"("review_factor");

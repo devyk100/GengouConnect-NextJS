@@ -1,8 +1,11 @@
+"use client"
 import FlashcardView from "@/components/flashcard/flashcardView";
 // import { ForwardRefEditor } from "@/components/markdown-editor/ForwardRefEditor";
 import MarkdownEditor from "@/components/markdown-editor/MarkdownEditor";
+import { Button } from "@/components/ui/button";
 import { FlashcardData } from "@/lib/flashcard-types";
-
+import axios from "axios"
+import { getSession } from "next-auth/react";
 export default function Page(){
     const demo: FlashcardData = {
         backSide: `<ul class="list-disc"><li><p>something else huh <em>dude</em> <strong>crazyfafwa</strong></p></li></ul>`,
@@ -17,6 +20,19 @@ export default function Page(){
     }
     return (
         <>
+        <Button onClick={async () => {
+            const user = await getSession();
+            
+            const something = await axios.post("http://localhost:8080", {
+                
+            }, {
+                headers: {
+                    //@ts-ignore
+                    Authorization: user?.user?.backendToken
+                }
+            })
+            console.log(something)
+        }}>Test</Button>
             <FlashcardView flashcardData={demo}/>
             {/* <FlashcardEditorView />
             <MarkdownEditor /> */}

@@ -33,7 +33,7 @@ model User {
   phone                        String
   profile_picture              String
   password                     String
-  is_password_set              Boolean
+  is_password_set              Boolean @default(false)
   register_method              RegisterMethod
   is_verified                  Boolean
   is_user_id_set               Boolean
