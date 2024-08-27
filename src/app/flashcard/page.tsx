@@ -43,7 +43,7 @@ export default async function FlashcardPage() {
                 </div>
                 <Separator orientation="vertical" className=""/>
                 <div className="flex items-center read-only: justify-center rounded-md p-2 w-full">
-                    <FlashcardCards />
+                    <FlashcardCards user={user}/>
                 </div>
             </section>
         </>

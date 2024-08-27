@@ -1,8 +1,10 @@
 "use client"
-import { useActiveDeck } from "@/state/store"
+import { useActiveDeck, useBackendToken } from "@/state/store"
 import FlashcardView from "../flashcard/flashcardView"
 import { FlashcardData } from "@/lib/flashcard-types"
 import FlashcardEditorView from "../flashcard-editor/flashcardEditorView"
+import { Session } from "next-auth"
+import { useEffect } from "react"
 const demo: FlashcardData = {
     backSide: `<ul class="list-disc"><li><p>something else huh <em>dude</em> <strong>crazyfafwa</strong></p></li></ul>`,
     frontSide: `something on the front side. **haha0** 
@@ -30,13 +32,20 @@ function DisplayFlashcards() {
             <div className="w-[30%]">
                 List of stuff
             </div>
-            <FlashcardEditorView />
+            <FlashcardEditorView/>
         </div>
     </>)
 }
 
-export default function FlashcardCards() {
+export default function FlashcardCards({user}: {
+    user: Session|null
+}) {
     const { activeDeck } = useActiveDeck()
+    const {setToken} = useBackendToken()
+    useEffect(() => {
+        //@ts-ignore
+        setToken(user?.user!.backendToken)
+    }, [])
     return (<div className="w-full h-full">
         {activeDeck == null ? "Select something to begin with, or create new." : <><DisplayFlashcards /></>}
     </div>)

@@ -29,6 +29,7 @@ import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { useActiveDeck } from "@/state/store";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 // import { useActiveDeck } from "@/state/store";
 export type FlashcardDeckType = {
     title: string,
@@ -54,7 +55,7 @@ export default function FlashcardDecks({ decks, user }: {
         queryFn: () => (getDecks({ token: user?.user?.backendToken }))
     })
     const queryClient = useQueryClient()
-    const { mutate: createDeckMutate } = useMutation({
+    const { mutate: createDeckMutate, isPending } = useMutation({
         mutationFn: createDeck,
         mutationKey: ["createDeck"],
         onSuccess: (options) => {
@@ -88,9 +89,19 @@ export default function FlashcardDecks({ decks, user }: {
                             </div>
                             <SheetClose asChild>
                                 <Button className="mt-2" type="submit" onClick={async () => {
+                                    if(isPending) return
                                     const user = await getSession()
                                     //@ts-ignore
                                     createDeckMutate({ token: user?.user?.backendToken, title: title })
+                                    toast("Successfully created the card", {
+                                        description: "Created the deck "+title,
+                                        // cancel: {},
+                                        action: {
+                                            label:"Okay",
+                                            onClick: () => {}
+                                        }
+                                    })
+                                    setTitle("")
                                 }}>Create</Button>
                             </SheetClose>
                         </SheetDescription>

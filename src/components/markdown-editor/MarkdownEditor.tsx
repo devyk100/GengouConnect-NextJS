@@ -43,8 +43,8 @@ const MenuBar = ({className}: {
   }
 
   return (
-    <div className="control-group">
-      <div className={cn("flex flex-wrap auto-rows-auto overflow-x-auto", className)}>
+    <div className={cn("control-group w-[200px] overflow-x-scroll scrollbar-thumb-rounded-full scrollbar-corner-neutral-50 scrollbar scrollbar-thumb-slate-700 scrollbar-track-transparent", className)}>
+      <div className={cn("flex flex-nowrap gap-2  w-screen p-2 bg-gray-700 rounded-xl")}>
         <Button
           variant={"icon-button"}
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -58,7 +58,7 @@ const MenuBar = ({className}: {
 
           className={editor.isActive('bold') ? 'bg-secondary dark:bg-lime-500' : ''}
         >
-          <Image alt='bold' src={BoldIcon} height={20} width={20} className='w-[20px] h-[20px]' />
+            <Image  alt='bold' src={BoldIcon} height={20} width={20} className='w-[20px] h-[20px]' />
         </Button>
         <Button
           variant={"icon-button"}
@@ -344,7 +344,7 @@ export default ({className, editable, containerClassName, content, onUpdate,menu
   return (
     <>
       <div className={cn("", containerClassName)}>
-        <EditorProvider onFocus={onFocus} onBlur={onBlur}  autofocus slotBefore={editable ? <MenuBar className={menuBarClassName||""}/>: <></>} immediatelyRender={false}   extensions={extensions} editorProps={{attributes: {
+        <EditorProvider   autofocus slotBefore={editable ? <MenuBar className={menuBarClassName||""}/>: <></>} immediatelyRender={false}   extensions={extensions} editorProps={{attributes: {
           class: className||""
         }}}  editable={editable} content={content} onUpdate={({editor}) => {
           if(onUpdate){

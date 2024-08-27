@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const backendUrl = "http://localhost:8080";
+export const backendUrl = "http://localhost:8080";
 console.log(backendUrl)
 export const getDecks = async ({token}: {
     token: string
@@ -30,3 +30,16 @@ export const createDeck = async ({token, title}: {
     })
     return data.data;
 }
+
+
+export const createFlashcard = async ({token, frontAudioUrl, rearAudioUrl, frontImageUrl, rearImageUrl, frontContent, rearContent, deckId, reviewFactor, reviewInterval}: {token:string, frontAudioUrl:string, rearAudioUrl:string, frontImageUrl:string, rearImageUrl:string, frontContent:string, rearContent:string, deckId:number, reviewFactor:number, reviewInterval:number}) => {
+    const data = await axios.post(`${backendUrl}/flashcard/create-card`, {
+        frontAudioUrl, rearAudioUrl, frontImageUrl, rearImageUrl, frontContent, rearContent, deckId, reviewFactor, reviewInterval
+    }, {
+        headers: {
+            Authorization: token
+        }
+    })
+    return data.data
+}
+

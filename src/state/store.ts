@@ -26,3 +26,14 @@ export const useFlashcardEditorState = create<FlashcardEditorState>()((set) => (
     editorState: EditorStateType.reviewCard,
     setEditorState: (newEditorState:EditorStateType) => set((state) => ({editorState:newEditorState}))
 }));
+
+
+interface BackendToken {
+    token: string,
+    setToken: (newToken:string) => void
+}
+
+export const useBackendToken = create<BackendToken>()((set) => ({
+    token: "",
+    setToken: (newToken: string) => set((state) => ({token:newToken}))
+}))
