@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import axios from "axios";
 import { backendUrl } from "@/db/get-post-delete-requests";
@@ -36,10 +36,14 @@ export default function ImageInputs({ inputType, onUpdate, id, initialPreview }:
     id: string;
     initialPreview: string
 }) {
+    
     const [isPending, setIsPending] = useState(false)
     const [previewUrl, setPreviewUrl] = useState<string>(initialPreview)
     const [uploadProgress, setUploadProgress] = useState(0);
     const { token } = useBackendToken();
+    useEffect(() => {
+
+    }, [initialPreview])
     return (
         <>
 
@@ -108,7 +112,7 @@ export default function ImageInputs({ inputType, onUpdate, id, initialPreview }:
                         setIsPending(false)
                         toast("Some error")
                     }
-                }} className="cursor-pointer"></Input>
+                }} className="cursor-pointer py-2 h-fit border-lime-300 border-[0.1px]"></Input>
         </>
     )
 }

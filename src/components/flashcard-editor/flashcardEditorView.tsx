@@ -7,36 +7,17 @@ import { Card, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 import { Suspense, useState } from "react";
 import dynamic from "next/dynamic";
-import { useActiveDeck } from "@/state/store";
+import { useActiveDeck, useFlashcardState } from "@/state/store";
 import MarkdownEditor from "../markdown-editor/MarkdownEditor";
 import { Input } from "../ui/input";
 import ReactQueryProvider from "../providers/react-query-provider";
+import FlashcardCardList from "./flashcardCardList";
 const FlashcardEditor = dynamic(() => import('./flashcardEditor'), {
   // suspense: true,
-  loading: () => <EditorSkeleton />,
-  ssr: false,
+  loading: () => <Loader />,
 });
-const demo: FlashcardData = {
-  backSide: `<ul class="list-disc"><li><p>something else huh <em>dude</em> <strong>crazyfafwa</strong></p></li></ul>`,
-  frontSide: `something on the front side. **haha0** 
-    **fnaowif**
-*miofawmge*
 
-
-> ~~-----fafwaf~~
----
-fawfswe
-    `,
-  reviewFactor: 1,
-  reviewInterval: 1,
-  reviewPriority: 1,
-  answerImageUrl: "",
-  questionImageUrl: "",
-  answerAudioUrl: "",
-  questionAudioUrl: ""
-}
-
-function EditorSkeleton() {
+export function Loader() {
   return (<>
     <div className="w-[400px] h-[500px] flex items-center justify-center">
 
@@ -54,12 +35,14 @@ function EditorSkeleton() {
 
 
 export default function FlashcardEditorView() {
-  const [isFlipped, setIsFlipped] = useState(false)
-  const { activeDeck } = useActiveDeck()
   return (
     <>
       <ReactQueryProvider>
-        <FlashcardEditor flashcardData={demo} />
+        
+        <FlashcardCardList />
+        <Suspense fallback={<Loader />}>
+        <FlashcardEditor/>
+        </Suspense>
       </ReactQueryProvider>
     </>
   )

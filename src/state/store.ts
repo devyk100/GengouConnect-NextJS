@@ -1,3 +1,4 @@
+import { FlashcardType } from '@/components/flashcard-editor/flashcardCardList'
 import { FlashcardDeckType } from '@/components/flashcard-page/flashcard-decks'
 import { create } from 'zustand'
 
@@ -37,3 +38,24 @@ export const useBackendToken = create<BackendToken>()((set) => ({
     token: "",
     setToken: (newToken: string) => set((state) => ({token:newToken}))
 }))
+
+interface FlashcardState {
+    flashcard: FlashcardType | undefined,
+    setFlashcard: (newFlashcard:FlashcardType) => void
+}
+
+export const useFlashcardState = create<FlashcardState>()((set) => ({
+    flashcard: undefined,
+    setFlashcard: (newFlashcard: FlashcardType) => set((state) => ({flashcard:newFlashcard}))
+}))
+
+interface DeckMenuState{
+    isDeckMenuOpen: boolean,
+    setDeckMenuOpen: (val:boolean) => void
+}
+
+export const useDeckMenuState = create<DeckMenuState>()((set) => ({
+    isDeckMenuOpen: true,
+    setDeckMenuOpen: (val: boolean) => set((state) => ({isDeckMenuOpen: val}))
+}))
+

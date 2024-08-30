@@ -333,7 +333,7 @@ export default ({className, editable, containerClassName, content, onUpdate,menu
   editable?: boolean;
   containerClassName?: string;
   menuBarClassName? :string;
-  content?: string;
+  content: string;
   onUpdate?: (val:string) => void
   onFocus?:() => void
   onBlur?: () => void

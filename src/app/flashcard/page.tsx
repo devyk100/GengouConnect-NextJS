@@ -11,6 +11,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { getDecks } from "@/db/get-post-delete-requests";
 import FlashcardCards from "@/components/flashcard-page/flashcard-cards";
+import NotFound from "../not-found";
+import FlashcardDeckMenu from "@/components/flashcard/flashcardDeckMenu";
 
 
 const demo: FlashcardDeckType[] = [
@@ -29,23 +31,25 @@ const demo: FlashcardDeckType[] = [
 ]
 
 export default async function FlashcardPage() {
-    const user = await getServerSession(authOptions);
-    //@ts-ignore
-    const flashcardDeckData = await getDecks({token:user?.user?.backendToken })
-    console.log(flashcardDeckData)
-    return (
-        <>
-            <section className="flex flex-row ">
-                <div className=" w-[20%] mt-5 h-fit">
-                    <ReactQueryProvider>
-                        <FlashcardDecks decks={flashcardDeckData} user={user}/>
-                    </ReactQueryProvider>
-                </div>
-                <Separator orientation="vertical" className=""/>
-                <div className="flex items-center read-only: justify-center rounded-md p-2 w-full">
-                    <FlashcardCards user={user}/>
-                </div>
-            </section>
-        </>
-    )
+    try {
+        const user = await getServerSession(authOptions);
+        console.log(user?.user)
+        //@ts-ignore
+        const flashcardDeckData = await getDecks({ token: user?.user?.backendToken })
+        return (
+            <>
+                <section className="flex flex-row relative h-screen overflow-x-hidden">
+                    <FlashcardDeckMenu flashcardDeckData={flashcardDeckData} user={user} />
+                    <Separator orientation="vertical" className="" />
+                    <FlashcardCards user={user} />
+
+                </section>
+            </>
+        )
+    }
+    catch (error) {
+        return (<>
+            <NotFound />
+        </>)
+    }
 }

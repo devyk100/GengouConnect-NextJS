@@ -1,10 +1,12 @@
 "use client"
-import { useActiveDeck, useBackendToken } from "@/state/store"
+import { useActiveDeck, useBackendToken, useDeckMenuState } from "@/state/store"
 import FlashcardView from "../flashcard/flashcardView"
 import { FlashcardData } from "@/lib/flashcard-types"
 import FlashcardEditorView from "../flashcard-editor/flashcardEditorView"
 import { Session } from "next-auth"
 import { useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { cn } from "@/lib/utils"
 const demo: FlashcardData = {
     backSide: `<ul class="list-disc"><li><p>something else huh <em>dude</em> <strong>crazyfafwa</strong></p></li></ul>`,
     frontSide: `something on the front side. **haha0** 
@@ -26,27 +28,29 @@ fawfswe
 }
 function DisplayFlashcards() {
     const { activeDeck } = useActiveDeck()
+
     return (<>
         <div className="flex flex-row w-full items-center justify-center">
 
-            <div className="w-[30%]">
-                List of stuff
-            </div>
-            <FlashcardEditorView/>
+            <FlashcardEditorView />
         </div>
     </>)
 }
 
-export default function FlashcardCards({user}: {
-    user: Session|null
+export default function FlashcardCards({ user }: {
+    user: Session | null
 }) {
     const { activeDeck } = useActiveDeck()
-    const {setToken} = useBackendToken()
+    const { setToken } = useBackendToken()
+    const {isDeckMenuOpen} = useDeckMenuState()
     useEffect(() => {
         //@ts-ignore
         setToken(user?.user!.backendToken)
     }, [])
-    return (<div className="w-full h-full">
-        {activeDeck == null ? "Select something to begin with, or create new." : <><DisplayFlashcards /></>}
-    </div>)
+    return (
+        <div className={cn("mt-10 flex items-center read-only: justify-center rounded-md p-2 transition-all duration-300 md:min-w-[100vw-320px] md:translate-x-0" , (isDeckMenuOpen?"translate-x-[100vw] min-w-0":'translate-x-0 min-w-[98vw]'))}>
+            <div className="w-full h-full">
+                {activeDeck == null ? "Select something to begin with, or create new." : <><DisplayFlashcards /></>}
+            </div>
+        </div>)
 }

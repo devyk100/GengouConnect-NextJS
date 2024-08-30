@@ -43,3 +43,12 @@ export const createFlashcard = async ({token, frontAudioUrl, rearAudioUrl, front
     return data.data
 }
 
+export const getFlashcardsForDeck = async ({token, deckId}: {token:string,deckId:number}) => {
+    const data = await axios.get(`${backendUrl}/flashcard/get-cards/${deckId}-10-0`, {
+        headers: {
+            Authorization: token as string
+        }
+    })
+    console.log(data, "haha cards")
+    return data.data
+}

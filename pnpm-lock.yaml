@@ -107,6 +107,9 @@ importers:
       fabric:
         specifier: ^6.3.0
         version: 6.3.0
+      html-react-parser:
+        specifier: ^5.1.13
+        version: 5.1.13(@types/react@18.3.3)(react@18.3.1)
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -2113,10 +2116,23 @@ packages:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
 
+  dom-serializer@2.0.0:
+    resolution: {integrity: sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg==}
+
+  domelementtype@2.3.0:
+    resolution: {integrity: sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==}
+
   domexception@4.0.0:
     resolution: {integrity: sha512-A2is4PLG+eeSfoTMA95/s4pvAoSo2mKtiM5jlHkAVewmiO8ISFTFKZjH7UAM1Atli/OT/7JHOrJRJiMKUZKYBw==}
     engines: {node: '>=12'}
     deprecated: Use your platform's native DOMException instead
+
+  domhandler@5.0.3:
+    resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
+    engines: {node: '>= 4'}
+
+  domutils@3.1.0:
+    resolution: {integrity: sha512-H78uMmQtI2AhgDJjWeQmHwJJ2bLPD3GMmO7Zja/ZZh84wkm+4ut+IUnUdRa8uCGX88DiVx1j6FRe1XfxEgjEZA==}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -2578,15 +2594,30 @@ packages:
   hastscript@8.0.0:
     resolution: {integrity: sha512-dMOtzCEd3ABUeSIISmrETiKuyydk1w0pa+gE/uormcTpSYuaNJPbX1NU3JLyscSLjwAQM8bWMhhIlnCqnRvDTw==}
 
+  html-dom-parser@5.0.9:
+    resolution: {integrity: sha512-QGeoFYwgQ582EDvrBx0+ejIz76/LuQcwwkmSR4ueKncjl2yWbciA45Kfz/LrHvWR3CgtKnxKFkr4Mpq2Sh1QNg==}
+
   html-encoding-sniffer@3.0.0:
     resolution: {integrity: sha512-oWv4T4yJ52iKrufjnyZPkrN0CH3QnrUqdB6In1g5Fe1mia8GmF36gnfNySxoZtxD5+NmYw1EElVXiBk93UeskA==}
     engines: {node: '>=12'}
+
+  html-react-parser@5.1.13:
+    resolution: {integrity: sha512-XTG2lbn9JDHc3DqGLpHkoArvptXMPl+Ckk5/cqRhdUmrhcPNZ5MPDrwd2PU3BePl2QmkLOb3WsWdjAotznMdUw==}
+    peerDependencies:
+      '@types/react': 0.14 || 15 || 16 || 17 || 18
+      react: 0.14 || 15 || 16 || 17 || 18
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   html-url-attributes@3.0.0:
     resolution: {integrity: sha512-/sXbVCWayk6GDVg3ctOX6nxaVj7So40FcFAnWlWGNAB1LpYKcV5Cd10APjPjW80O7zYW2MsjBV4zZ7IZO5fVow==}
 
   html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
+
+  htmlparser2@9.1.0:
+    resolution: {integrity: sha512-5zfg6mHUoaer/97TxnGpxmbR7zJtPwIYFMZ/H5ucTlPZhKvtum05yiPK3Mgai3a0DyVxv7qYqoweaEd2nrYQzQ==}
 
   http-proxy-agent@5.0.0:
     resolution: {integrity: sha512-n2hY8YdoRE1i7r6M0w9DIw5GgZN0G25P8zLCRQ8rjXtTU3vsNFBI/vWK/UIeE6g5MUUz6avwAPXmL6Fy9D/90w==}
@@ -3559,6 +3590,9 @@ packages:
       '@types/react': '>=18'
       react: '>=18'
 
+  react-property@2.0.2:
+    resolution: {integrity: sha512-+PbtI3VuDV0l6CleQMsx2gtK0JZbZKbpdu5ynr+lbsuvtmgbNcS3VM0tuY2QjFNOcWxvXeHjDpy42RO+4U2rug==}
+
   react-remove-scroll-bar@2.3.6:
     resolution: {integrity: sha512-DtSYaao4mBmX+HDo5YWYdBWQwYIQQshUV/dVxFxK+KM26Wjwp1gZ6rv6OC3oujI6Bfu6Xyg3TwK533AQutsn/g==}
     engines: {node: '>=10'}
@@ -3874,6 +3908,9 @@ packages:
 
   style-mod@4.1.2:
     resolution: {integrity: sha512-wnD1HyVqpJUI2+eKZ+eo1UwghftP6yuFheBqqe+bWCotBjC2K1YnteJILRMs3SM4V/0dLEW1SC27MWP5y+mwmw==}
+
+  style-to-js@1.1.12:
+    resolution: {integrity: sha512-tv+/FkgNYHI2fvCoBMsqPHh5xovwiw+C3X0Gfnss/Syau0Nr3IqGOJ9XiOYXoPnToHVbllKFf5qCNFJGwFg5mg==}
 
   style-to-object@1.0.6:
     resolution: {integrity: sha512-khxq+Qm3xEyZfKd/y9L3oIWQimxuc4STrQKtQn8aSDRHb8mFgpukgX1hdzfrMEW6JCjyJ8p89x+IUMVnCBI1PA==}
@@ -6487,10 +6524,28 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
+  dom-serializer@2.0.0:
+    dependencies:
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
+      entities: 4.5.0
+
+  domelementtype@2.3.0: {}
+
   domexception@4.0.0:
     dependencies:
       webidl-conversions: 7.0.0
     optional: true
+
+  domhandler@5.0.3:
+    dependencies:
+      domelementtype: 2.3.0
+
+  domutils@3.1.0:
+    dependencies:
+      dom-serializer: 2.0.0
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
 
   eastasianwidth@0.2.0: {}
 
@@ -7225,14 +7280,36 @@ snapshots:
       property-information: 6.5.0
       space-separated-tokens: 2.0.2
 
+  html-dom-parser@5.0.9:
+    dependencies:
+      domhandler: 5.0.3
+      htmlparser2: 9.1.0
+
   html-encoding-sniffer@3.0.0:
     dependencies:
       whatwg-encoding: 2.0.0
     optional: true
 
+  html-react-parser@5.1.13(@types/react@18.3.3)(react@18.3.1):
+    dependencies:
+      domhandler: 5.0.3
+      html-dom-parser: 5.0.9
+      react: 18.3.1
+      react-property: 2.0.2
+      style-to-js: 1.1.12
+    optionalDependencies:
+      '@types/react': 18.3.3
+
   html-url-attributes@3.0.0: {}
 
   html-void-elements@3.0.0: {}
+
+  htmlparser2@9.1.0:
+    dependencies:
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
+      domutils: 3.1.0
+      entities: 4.5.0
 
   http-proxy-agent@5.0.0:
     dependencies:
@@ -8484,6 +8561,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  react-property@2.0.2: {}
+
   react-remove-scroll-bar@2.3.6(@types/react@18.3.3)(react@18.3.1):
     dependencies:
       react: 18.3.1
@@ -8897,6 +8976,10 @@ snapshots:
   strip-json-comments@3.1.1: {}
 
   style-mod@4.1.2: {}
+
+  style-to-js@1.1.12:
+    dependencies:
+      style-to-object: 1.0.6
 
   style-to-object@1.0.6:
     dependencies:
