@@ -38,7 +38,7 @@ export default function FlashcardEditor() {
 
     const { mutate: createFlashcardMutate, isPending } = useMutation({
         mutationFn: createFlashcard,
-        mutationKey: ["flashcard-create", flashcardData, activeDeck!.id ?? -1]
+        mutationKey: ["flashcard-create", flashcardData, activeDeck?.id ?? -1]
     });
 
     return (

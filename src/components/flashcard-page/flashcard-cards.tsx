@@ -53,7 +53,7 @@ export default function FlashcardCards({ user }: {
         setToken(user?.user!.backendToken)
     }, [])
     return (
-        <div className={cn("mt-10 flex items-center w-[80vw]  read-only:  rounded-md p-2 transition-all duration-300 md:min-w-[100vw-320px] md:translate-x-0 flex-col" , (isDeckMenuOpen?"translate-x-[100vw] min-w-0":'translate-x-0 min-w-[98vw] w-[98vw]'))}>
+        <div className={cn("mt-10 flex items-center w-[80vw]  read-only:  rounded-md p-2 transition-all duration-300 md:min-w-[100vw-320px] md:translate-x-0 flex-col" , (isDeckMenuOpen?"translate-x-[100vw] min-w-0":'translate-x-0 min-w-[98vw] w-[98vw] md:min-w-0'))}>
             <Button className="m-1 my-1" variant={"outline"}>Add Card</Button>
             <div className=" h-fit w-[400px] lg:w-fit border-[0.5px] rounded-lg flex items-center justify-center">
                 {activeDeck == null ? "Select something to begin with, or create new." : <><DisplayFlashcards /></>}

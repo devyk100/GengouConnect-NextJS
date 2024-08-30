@@ -181,6 +181,7 @@ export const authOptions:NextAuthOptions = {
             params.session.user!.backendToken = params.token.backendToken;
             return params.session
         },
+        
     }
 }
 export const handler = NextAuth(authOptions)

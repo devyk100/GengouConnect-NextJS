@@ -39,7 +39,7 @@ export default function FlashcardEditorView() {
     <>
       <ReactQueryProvider>
         
-        <FlashcardCardList />
+        {/* <FlashcardCardList /> */}
         <Suspense fallback={<Loader />}>
         <FlashcardEditor/>
         </Suspense>
