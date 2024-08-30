@@ -21,7 +21,7 @@ export default function FlashcardCardWhole({ flashcardData }: {
 }) {
     const [isFlipped, setIsFlipped] = useState(false)
     return (<>
-        <Card className="relative w-[400px] sm:w-[450px] md:w-[500px]">
+        <Card className="relative w-[350px] sm:w-[450px] md:w-[500px]">
         <audio controls autoPlay>
         <source src={flashcardData.questionAudioUrl} type="audio/mpeg">
         </source>
