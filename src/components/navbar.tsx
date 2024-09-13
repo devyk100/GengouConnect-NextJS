@@ -14,7 +14,9 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { signOut } from "next-auth/react"
+import { getSession, signOut } from "next-auth/react"
+import { ModeToggle } from "./darkModeToggle"
+import { redirect, usePathname, useRouter } from "next/navigation"
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -55,8 +57,17 @@ const components: { title: string; href: string; description: string }[] = [
 ]
 
 export function Navbar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  (async function(){
+    const user = await getSession()
+    if(user == null && pathname != "/auth/signIn" && pathname != "/"){
+      (pathname)
+      router.push("/auth/signIn")
+    }
+  })()
   return (
-    <NavigationMenu>
+    <NavigationMenu className="">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
@@ -107,13 +118,19 @@ export function Navbar() {
               <ListItem
                 key={"signout"}
                 title="Sign out"
-                onClick={() => signOut()}
+                onClick={() => {
+                  signOut()
+                  redirect("/auth/signIn")
+                }}
                 className="cursor-pointer"
               >
                 Sign out of GengouConnect
               </ListItem>
             </ul>
           </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <ModeToggle />
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

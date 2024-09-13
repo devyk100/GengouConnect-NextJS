@@ -33,11 +33,11 @@ model User {
   phone                        String
   profile_picture              String
   password                     String
+  is_password_set              Boolean
   register_method              RegisterMethod
   is_verified                  Boolean
   is_user_id_set               Boolean
-  is_password_set             Boolean
-  is_phone_set                Boolean
+  is_phone_set                 Boolean
   lessons                      Lesson[]
   contents                     ExternalContentItem[]
   LiveClassToInstructorMapping LiveClassToInstructorMapping[]
@@ -47,6 +47,8 @@ model User {
   past_experiences             String?
   CourseToInstructorMapping    CourseToInstructorMapping[]
   CourseToLearnerMapping       CourseToLearnerMapping[]
+  FlashcardDeckToCopiers       FlashcardDeckToCopiers[]
+  FlashcardDeckToEditors       FlashcardDeckToEditors[]
 
   @@index([user_id])
   @@index([email_id])
@@ -311,58 +313,71 @@ model AssignmentToQuestionMapping {
 // ------------------------------------------------------------------------------------------------------------
 
 // -------------------------- Flashcards ----------------------------------------------------------------------
-model FlashCardGroup {
-  id            Int                  @id @default(sequence())
-  title         String
-  flashcard     FlashCard[]
-  userflashcard UserFlashCardGroup[]
+model FlashcardDeck {
+  id                          Int                      @id @default(sequence())
+  title                       String
+  max_review_limit_per_day    Int
+  graduating_interval         Int
+  learning_steps              String
+  new_cards_limit_per_day     Int
+  easy_interval               Int
+  flashcards                  Flashcard[]
+  FlashcardDeckToCopiersDecks FlashcardDeckToCopiers[] @relation("OriginalDecks")
+  FlashcardDeckToCopiers      FlashcardDeckToCopiers[] @relation("CopiedDecks")
+  FlashcardDeckToEditors      FlashcardDeckToEditors[]
+
+  @@index([id])
+  @@index([title])
 }
 
-model FlashCard {
-  id                 Int             @id @default(sequence())
-  front_side         String
-  back_side          String
-  question_audio_url String?
-  answer_audio_url   String?
-  question_image_url String?
-  answer_image_url   String?
-  flashcardgroup_id  Int
-  flashcardgroup     FlashCardGroup  @relation(fields: [flashcardgroup_id], references: [id])
-  userflashcard      UserFlashCard[]
+model Flashcard {
+  id                      Int           @id @default(sequence())
+  front_side              String
+  rear_side               String
+  front_audio             String?
+  rear_audio              String?
+  front_image             String?
+  rear_image              String?
+  review_factor           Int
+  review_interval         Int
+  due_date                DateTime
+  unreviewed_priority_num Int
+  deck_id                 Int
+  decks                   FlashcardDeck @relation(fields: [deck_id], references: [id])
+
+  @@index([due_date])
+  @@index([id])
+  @@index([review_factor])
+  @@index([review_interval])
+  @@index([unreviewed_priority_num])
+  @@index([deck_id])
 }
 
-model UserFlashCardGroup {
-  id                  Int             @id @default(sequence())
-  flashcardgroup_id   Int
-  flashcardgroup      FlashCardGroup  @relation(fields: [flashcardgroup_id], references: [id])
-  graduating_interval Int
-  easy_interval       Int
-  new_cards_per_day   Int
-  max_reviews_per_day Int
-  learning_steps      BigInt // encode and decode it well
-  userflashcard       UserFlashCard[]
+model FlashcardDeckToEditors {
+  id      Int           @id @default(sequence())
+  deck_id Int
+  user_id String
+  decks   FlashcardDeck @relation(fields: [deck_id], references: [id])
+  user    User          @relation(fields: [user_id], references: [user_id])
 
-  @@index([flashcardgroup_id])
+  @@index([id])
+  @@index([deck_id])
+  @@index([user_id])
 }
 
-model UserFlashCard {
-  id                          Int                @id @default(sequence())
-  userflashcardgroup_id       Int
-  userflashcardgroup          UserFlashCardGroup @relation(fields: [userflashcardgroup_id], references: [id])
-  flashcard_id                Int
-  flashcard                   FlashCard          @relation(fields: [flashcard_id], references: [id])
-  modified_front_side         String
-  modified_back_side          String
-  modified_question_audio_url String?
-  modified_answer_audio_url   String?
-  modified_question_image_url String?
-  modified_answer_image_url   String?
+model FlashcardDeckToCopiers {
+  id             Int           @id @default(sequence())
+  deck_id        Int
+  deck           FlashcardDeck @relation("OriginalDecks", fields: [deck_id], references: [id])
+  user_id        String
+  user           User          @relation(fields: [user_id], references: [user_id])
+  copied_deck_id Int
+  copied_deck    FlashcardDeck @relation("CopiedDecks", fields: [copied_deck_id], references: [id])
 
-  review_factor   Int // xx.xx --> xxxxx please, 100a
-  review_interval Int
-
-  @@index([flashcard_id])
-  @@index([userflashcardgroup_id])
+  @@index([id])
+  @@index([deck_id])
+  @@index([user_id])
+  @@index([copied_deck_id])
 }
 
 // ---------------------------------------------------------------------------------------------------

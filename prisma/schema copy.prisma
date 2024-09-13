@@ -1,0 +1,457 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DB_HOST")
+}
+
+enum UserType {
+  Learner
+  Instructor
+}
+
+enum RegisterMethod {
+  Google
+  Github
+  Email
+}
+
+model User {
+  id                           Int                            @id @default(sequence())
+  user_id                      String                         @unique
+  name                         String
+  user_type                    UserType
+  email_id                     String
+  phone                        String
+  profile_picture              String
+  password                     String
+  is_password_set              Boolean @default(false)
+  register_method              RegisterMethod
+  is_verified                  Boolean
+  is_user_id_set               Boolean
+  is_phone_set                 Boolean
+  lessons                      Lesson[]
+  contents                     ExternalContentItem[]
+  LiveClassToInstructorMapping LiveClassToInstructorMapping[]
+  LiveClassToLearnersMapping   LiveClassToLearnersMapping[]
+  ConversationUserMapping      ConversationToUserMapping[]
+  ConversationChat             ConversationChat[]
+  past_experiences             String?
+  CourseToInstructorMapping    CourseToInstructorMapping[]
+  CourseToLearnerMapping       CourseToLearnerMapping[]
+  FlashcardDeckToCopiers       FlashcardDeckToCopiers[]
+
+  @@index([user_id])
+  @@index([email_id])
+  @@index([phone])
+}
+
+// -------------------------------------- User, normal chats, and lessons and courses -----------------------------------------
+
+model Conversation {
+  id                        Int                         @id @default(sequence())
+  title                     String
+  ConversationToUserMapping ConversationToUserMapping[]
+  ConversationChat          ConversationChat[]
+}
+
+model ConversationToUserMapping {
+  id                 Int          @id @default(sequence())
+  conversation_id    Int
+  conversation       Conversation @relation(fields: [conversation_id], references: [id])
+  user_id            String
+  User               User         @relation(fields: [user_id], references: [user_id])
+  send_permission    Boolean
+  receive_permission Boolean
+
+  @@index([conversation_id])
+  @@index([user_id])
+  @@index([conversation_id, user_id])
+}
+
+model ConversationChat {
+  id              Int          @id @default(sequence())
+  conversation_id Int
+  conversation    Conversation @relation(fields: [conversation_id], references: [id])
+  content         String
+  user_id         String
+  User            User         @relation(fields: [user_id], references: [user_id])
+  timestamp       DateTime
+  image_url       String?
+  document_s3_url String?
+  video_s3_url    String?
+
+  @@index([conversation_id])
+  @@index([user_id])
+  @@index([conversation_id, user_id])
+}
+
+model Course {
+  id                     Int      @id @default(sequence())
+  language               String
+  title                  String
+  content                String
+  one_time_price         Int?
+  monthly_price          Int?
+  one_time_price_premium Int?
+  monthly_price_premium  Int?
+  demo_content           String?
+  testimonials           String?
+  Lesson                 Lesson[]
+  total_marks            Int
+
+  @@index([one_time_price_premium])
+  @@index([one_time_price])
+  @@index([monthly_price])
+  @@index([monthly_price_premium])
+}
+
+model CourseToInstructorMapping {
+  id      Int    @id @default(sequence())
+  user_id String
+  user    User   @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+}
+
+model CourseToLearnerMapping {
+  id                  Int    @id @default(sequence())
+  user_id             String
+  course_graded_marks Int
+  user                User   @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+  @@index([course_graded_marks])
+}
+
+// -------------------------------------------------------------------------------------------------------------
+
+// ----------------------------------- Lessons and interactivity with questions, and other assignments ---------------
+model Lesson {
+  id                  Int    @id @default(sequence())
+  by_id               String
+  user                User   @relation(fields: [by_id], references: [user_id])
+  course_id           Int
+  course              Course @relation(fields: [course_id], references: [id])
+  lessonToPageMapping Page[]
+
+  @@index([by_id])
+  @@index([course_id])
+  @@index([course_id, by_id])
+}
+
+model Page {
+  id              Int                   @id @default(sequence())
+  content         String
+  lesson_id       Int
+  lesson          Lesson                @relation(fields: [lesson_id], references: [id])
+  questions       QuestionItem[]
+  externalcontent ExternalContentItem[]
+  page_no         Int
+
+  @@index([page_no])
+  @@index([lesson_id])
+}
+
+enum ExternalContentType {
+  pdf
+  video
+  youtube_video
+  url
+  image
+  document
+}
+
+model ExternalContentItem {
+  id      Int    @id @default(sequence())
+  title   String
+  s3_url  String
+  by      String
+  user_id String
+  page_id Int
+  page    Page   @relation(fields: [page_id], references: [id])
+  user    User   @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+  @@index([page_id])
+}
+
+enum QuestionItemType {
+  FillInTheBlanks
+  SingleChoiceQuestion
+  MultiChoiceQuestion
+  FillWholeSentence
+}
+
+enum ChoiceAnswerOptions {
+  a
+  b
+  c
+  d
+}
+
+model QuestionItem {
+  id                          Int                          @id @default(sequence())
+  title                       String
+  type                        QuestionItemType
+  item_id                     Int // any of the following bottom types
+  page_id                     Int?
+  assignment_id               Int?
+  page                        Page?                        @relation(fields: [page_id], references: [id])
+  assignmenttoquestionmapping AssignmentToQuestionMapping? @relation(fields: [assignment_id], references: [id])
+  questionitemscore           QuestionItemScore[]
+  total_score                 Int
+
+  @@index([page_id])
+  @@index([item_id])
+  @@index([total_score])
+}
+
+model QuestionItemScore {
+  id               Int     @id @default(sequence())
+  remarks          String?
+  score            Int     @default(-1)
+  percentage       Int // store in 100.00 --> 10000 10 thousand format
+  question_item_id Int
+
+  questionitem QuestionItem @relation(fields: [question_item_id], references: [id])
+
+  @@index([question_item_id])
+}
+
+model FillInTheBlanksQuestion {
+  id               Int                     @id @default(sequence())
+  question         String
+  possible_answers FillInTheBlanksAnswer[]
+}
+
+model FillInTheBlanksAnswer {
+  id                      Int                     @id @default(sequence())
+  possible_answer         String
+  question_id             Int
+  fillintheblanksquestion FillInTheBlanksQuestion @relation(fields: [question_id], references: [id])
+
+  @@index([question_id])
+}
+
+model SingleChoiceQuestion {
+  id               Int                  @id @default(sequence())
+  question         String
+  possible_answers SingleChoiceAnswer[]
+  correct_answer   ChoiceAnswerOptions
+}
+
+model SingleChoiceAnswer {
+  id                   Int                  @id @default(sequence())
+  question_id          Int
+  singlechoicequestion SingleChoiceQuestion @relation(fields: [question_id], references: [id])
+  answer_string        String
+  option               ChoiceAnswerOptions
+
+  @@index([question_id])
+}
+
+model MultiChoiceQuestion {
+  id       Int                 @id @default(sequence())
+  question String
+  options  MultiChoiceAnswer[]
+}
+
+model MultiChoiceAnswer {
+  id                  Int                 @id @default(sequence())
+  question_id         Int
+  multichoicequestion MultiChoiceQuestion @relation(fields: [question_id], references: [id])
+  answer_string       String
+  is_correct          Boolean
+  option              ChoiceAnswerOptions
+
+  @@index([question_id])
+}
+
+model FillWholeSentenceQuestion {
+  id                 Int                         @id @default(sequence())
+  question_string    String
+  possible_solutions FillWholeSentenceSolution[]
+}
+
+model FillWholeSentenceSolution {
+  id                        Int                       @id @default(sequence())
+  answer_string             String
+  question_id               Int
+  fillwholesentencequestion FillWholeSentenceQuestion @relation(fields: [question_id], references: [id])
+
+  @@index([question_id])
+}
+
+model Assignment {
+  id          Int    @id @default(sequence())
+  title       String
+  total_marks Int
+  course_id   Int
+
+  @@index([course_id])
+  @@index([total_marks])
+}
+
+model AssignmentToQuestionMapping {
+  id            Int            @id @default(sequence())
+  question_id   Int
+  question_item QuestionItem[]
+
+  @@index([question_id])
+}
+
+// ------------------------------------------------------------------------------------------------------------
+
+// -------------------------- Flashcards ----------------------------------------------------------------------
+model FlashcardDeck {
+  id                          Int                      @id @default(sequence())
+  title                       String
+  max_review_limit_per_day    Int
+  graduating_interval         Int
+  learning_steps              String
+  new_cards_limit_per_day     Int
+  easy_interval               Int
+  flashcards                  Flashcard[]
+  FlashcardDeckToCopiersDecks FlashcardDeckToCopiers[] @relation("OriginalDecks")
+  FlashcardDeckToCopiers      FlashcardDeckToCopiers[] @relation("CopiedDecks")
+
+  @@index([id])
+  @@index([title])
+}
+
+model Flashcard {
+  id                      Int           @id @default(sequence())
+  front_side              String
+  rear_side               String
+  front_audio             String?
+  rear_audio              String?
+  front_image             String?
+  rear_image              String?
+  review_factor           Int
+  review_interval         Int
+  due_date                DateTime
+  unreviewed_priority_num Int
+  deck_id                 Int 
+  decks                   FlashcardDeck @relation(fields: [deck_id], references: [id])
+
+  @@index([due_date])
+  @@index([id])
+  @@index([review_factor])
+  @@index([review_interval])
+  @@index([unreviewed_priority_num])
+  @@index([deck_id])
+}
+
+model FlashcardDeckToEditors {
+  id      Int @id @default(sequence())
+  deck_id Int
+  user_id Int
+
+  @@index([id])
+  @@index([deck_id])
+  @@index([user_id])
+}
+
+model FlashcardDeckToCopiers {
+  id             Int           @id @default(sequence())
+  deck_id        Int
+  deck           FlashcardDeck @relation("OriginalDecks", fields: [deck_id], references: [id])
+  user_id        String
+  user           User          @relation(fields: [user_id], references: [user_id])
+  copied_deck_id Int
+  copied_deck    FlashcardDeck @relation("CopiedDecks", fields: [copied_deck_id], references: [id])
+
+  @@index([id])
+  @@index([deck_id])
+  @@index([user_id])
+  @@index([copied_deck_id])
+}
+
+// ---------------------------------------------------------------------------------------------------
+
+// --------------------------------------- LiveClass, Chats and Whiteboard ---------------------------
+
+model LiveClass {
+  id                           Int                            @id @default(sequence())
+  title                        String
+  liveclasstoinstructormapping LiveClassToInstructorMapping[]
+  liveclasstolearnersmapping   LiveClassToLearnersMapping[]
+  LiveChat                     LiveChat[]
+  WhiteboardEvent              WhiteboardEvent[]
+  WhiteboardSlide              WhiteboardSlide[]
+  start_time                   DateTime
+  end_time                     DateTime
+
+  @@index([start_time])
+}
+
+model LiveClassToInstructorMapping {
+  id            Int       @id @default(sequence())
+  live_class_id Int
+  user_id       String
+  liveclass     LiveClass @relation(fields: [live_class_id], references: [id])
+  user          User      @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+  @@index([live_class_id])
+  @@index([live_class_id, user_id])
+}
+
+model LiveClassToLearnersMapping {
+  id            Int       @id @default(sequence())
+  live_class_id Int
+  user_id       String
+  liveclass     LiveClass @relation(fields: [live_class_id], references: [id])
+  user          User      @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+  @@index([live_class_id])
+  @@index([live_class_id, user_id])
+}
+
+model LiveChat {
+  id            Int       @id @default(sequence())
+  live_class_id Int
+  by_user_id    String
+  text          String
+  diff_time     Int
+  liveclass     LiveClass @relation(fields: [live_class_id], references: [id])
+
+  @@index([live_class_id, id])
+  @@index([live_class_id])
+  @@index([by_user_id])
+}
+
+model WhiteboardEvent {
+  id           Int       @id @default(sequence())
+  diff_time    Int
+  diff_content String
+  liveclass_id Int
+  liveclass    LiveClass @relation(fields: [liveclass_id], references: [id])
+
+  @@index([liveclass_id])
+}
+
+model WhiteboardSlide {
+  id           Int       @id @default(sequence())
+  slide_no     Int
+  liveclass_id Int
+  liveclasss   LiveClass @relation(fields: [liveclass_id], references: [id])
+
+  @@index([slide_no])
+  @@index([liveclass_id])
+  @@index([slide_no, liveclass_id])
+}
+
+// ------------------------------------------------------------------------------------------------------------------
+
+// EugslGggG1nqiGzGj9N2nA
